@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Advent of Code 2024
+data/day*.txt
+bin/
+
+# Visual Studio Code
+.vscode/
