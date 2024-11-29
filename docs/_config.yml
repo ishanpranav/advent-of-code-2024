@@ -1,0 +1,8 @@
+# _config.yml
+# Licensed under the MIT license.
+
+plugins: [
+
+]
+
+theme: jekyll-theme-slate
