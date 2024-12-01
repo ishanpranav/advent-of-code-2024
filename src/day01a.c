@@ -38,7 +38,7 @@ int main()
     }
 
     qsort(a, n, sizeof * a, main_compare);
-    qsort(b, n, sizeof * a, main_compare);
+    qsort(b, n, sizeof * b, main_compare);
     
     unsigned long sum = 0;
 
