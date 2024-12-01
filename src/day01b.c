@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 // Copyright (c) 2024-2025 Ishan Pranav
 
-// Historian Histeria
+// Historian Hysteria
 
 #include <stdio.h>
 #include <stdlib.h>

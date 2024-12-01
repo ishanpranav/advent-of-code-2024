@@ -2,9 +2,9 @@
 <!-- Licensed under the MIT license. -->
 <!-- Copyright (c) 2024-2025 Ishan Pranav -->
 
-<!-- Historian Histeria -->
+<!-- Historian Hysteria -->
 
-# Day 1: Historian Histeria
+# Day 1: Historian Hysteria
 
 ## Part A
 
