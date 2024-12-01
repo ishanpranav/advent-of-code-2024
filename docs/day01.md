@@ -23,7 +23,7 @@ $a_i,b_i\in\mathbb{Z}$ for all $0\leq i\lt n$.
 
 ## Part B
 
-Let $X\subseteq\mathbb{Z}$. Let $A,B$ be lists with $a,b\in X$ for all
+Let $X\subseteq\mathbb{N}$. Let $A,B$ be lists with $a,b\in X$ for all
 $a\in A,b\in B$.
 
 **Algorithm:**

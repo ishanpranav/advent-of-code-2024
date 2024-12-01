@@ -11,8 +11,8 @@
 
 int main()
 {
-    long a[MAX_N];
-    long b[MAX_N];
+    unsigned long a[MAX_N];
+    unsigned long b[MAX_N];
     unsigned int c[MAX_VALUE] = { 0 };
     unsigned int n = 0;
 
