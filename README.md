@@ -1,3 +1,7 @@
+<!-- README.md -->
+<!-- Licensed under the MIT license. -->
+<!-- Copyright (c) 2024-2025 Ishan Pranav -->
+
 # Advent of Code 2024
 
 This is a collection of solutions to the
@@ -13,9 +17,6 @@ for each solution.
 
 These programs are cross-platform, having been tested on Windows and Linux
 operating systems.
-
-**Important:** Do not use Windows-style line endings (`CR LF`, i.e. `\r\n`).
-Only use Unix-style line endings (`LF`, i.e. `\n`).
 
 **Important:** There is no error-checking. An invalid input usually results in a
 segmentation violation.

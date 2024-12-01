@@ -1,3 +1,7 @@
+# .gitignore
+# Licensed under the MIT license.
+# Copyright (c) 2024-2025 Ishan Pranav
+
 # Prerequisites
 *.d
 
@@ -53,7 +57,8 @@ dkms.conf
 
 # Advent of Code 2024
 data/day*.txt
-bin/
+src/day*
+!src/day*.c
 
 # Visual Studio Code
 .vscode/
