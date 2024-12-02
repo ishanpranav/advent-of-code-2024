@@ -1,6 +1,6 @@
 // day02b.c
-// Licensed under the MIT license.
 // Copyright (c) 2024-2025 Ishan Pranav
+// Licensed under the MIT license.
 
 // Red-Nosed Reports
 

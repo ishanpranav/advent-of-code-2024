@@ -1,6 +1,6 @@
 # Makefile
-# Licensed under the MIT license.
 # Copyright (c) 2024-2025 Ishan Pranav
+# Licensed under the MIT license.
 
 CC = clang
 CFLAGS = -O3 -pedantic -std=c99 -Wall -Wextra
