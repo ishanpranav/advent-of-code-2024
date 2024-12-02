@@ -41,7 +41,7 @@ static bool main_step(const char* line)
     while (sscanf(line, "%d%n", l + 1, &offset) == 1)
     {
         int difference = l[1] - l[0];
-        unsigned int absolute = abs(difference);
+        int absolute = abs(difference);
 
         if (absolute < 1 || absolute > 3)
         {
