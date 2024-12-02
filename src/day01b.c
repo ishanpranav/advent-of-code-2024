@@ -5,7 +5,6 @@
 // Historian Hysteria
 
 #include <stdio.h>
-#include <stdlib.h>
 #define MAX_N 1024
 #define MAX_VALUE 131072
 
@@ -16,7 +15,7 @@ int main()
     unsigned int c[MAX_VALUE] = { 0 };
     unsigned int n = 0;
 
-    while (scanf("%ld %ld ", a + n, b + n) == 2)
+    while (scanf("%lu %lu ", a + n, b + n) == 2)
     {
         c[b[n]]++;
         n++;
