@@ -7,8 +7,28 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define BUFFER_SIZE 32
 #define MAX_LENGTH 8
+
+struct List
+{
+    unsigned int length;
+    int items[MAX_LENGTH];
+};
+
+typedef struct List List;
+
+static void list_remove_at(List* result, const List* instance, unsigned int i)
+{
+    const int* items = instance->items;
+    int length = instance->length;
+
+    memcpy(result->items, items, i * sizeof * items);
+    memcpy(result->items + i, items + i + 1, (length - i) * sizeof * items);
+
+    result->length = length - 1;
+}
 
 static int sgn(int x)
 {
@@ -25,75 +45,87 @@ static int sgn(int x)
     return 0;
 }
 
-static bool main_step(int items[MAX_LENGTH], unsigned int length)
+static unsigned int main_step(List* l)
 {
-    int sign = 0;
-
-    for (unsigned int j = 1; j < length; j++)
+    if (!l->length)
     {
-        int difference = items[j] - items[j - 1];
-        unsigned int absoluteDifference = abs(difference);
+        return 0;
+    }
 
-        if (absoluteDifference < 1 || absoluteDifference > 3)
+    int s = 0;
+
+    for (unsigned int i = 1; i < l->length; i++)
+    {
+        int difference = l->items[i] - l->items[i - 1];
+        unsigned int absolute = abs(difference);
+
+        if (absolute < 1 || absolute > 3)
         {
-            return false;
+            return i;
         }
 
-        int signDifference = sgn(difference);
+        int sign = sgn(difference);
 
-        if (sign)
+        if (s)
         {
-            if (signDifference != sign)
+            if (sign != s)
             {
-                return false;
+                return i;
             }
         }
         else
         {
-            sign = signDifference;
+            s = sign;
         }
     }
 
-    return true;
+    return 0;
 }
 
 int main()
 {
-    int items[MAX_LENGTH];
     char buffer[BUFFER_SIZE];
     unsigned int count = 0;
 
     while (fgets(buffer, sizeof buffer, stdin))
     {
         char* line = buffer;
+        List l;
         int offset;
-        unsigned int length = 0;
 
-        while (sscanf(line, "%d%n", items + length, &offset) == 1)
+        l.length = 0;
+
+        while (sscanf(line, "%d%n", l.items + l.length, &offset) == 1)
         {
             line += offset;
-            length++;
+            l.length++;
         }
 
-        if (main_step(items, length)) {
+        unsigned int i = main_step(&l);
+
+        if (i == 0)
+        {
             count++;
+
             continue;
         }
 
-        for (unsigned int i = 0; i < length; i++) {
-            int temp[MAX_LENGTH];
-            int temp_len = 0;
+        List copy;
 
-            for (unsigned int j = 0; j < length; j++) {
-                if (j != i) {
-                    temp[temp_len++] = items[j];
-                }
-            }
+        list_remove_at(&copy, &l, i - 1);
 
-            if (main_step(temp, temp_len)) {
-                count++;
-                break;
-            }
+        if (main_step(&copy) == 0)
+        {
+            count++;
+
+            continue;
+        }
+
+        list_remove_at(&copy, &l, i);
+
+        if (main_step(&copy) == 0)
+        {
+            count++;
         }
     }
 
