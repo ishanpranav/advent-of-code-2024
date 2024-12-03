@@ -17,7 +17,7 @@ $e\in\mathbb{R}$.
   * if $a$, then assign $n\leftarrow n+1$;
 * return $n$.
 
-**Time complexity:** $O(|L|\cdot\max_{\ell\in L}(\text{len}(\ell)))$.
+**Time complexity:** $O(\lvert L\rvert\cdot\max_{\ell\in L}(\text{len}(\ell)))$.
 
 **Space complexity:** $O(1)$.
 
