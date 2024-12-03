@@ -9,7 +9,7 @@
 Let $L$ be a set of lists where for all $\ell\in L$, for all $e\in\ell$, we have
 $e\in\mathbb{R}$.
 
-**Algorithm 1.**
+**Algorithm 1:**
 
 * let $n\leftarrow 0$;
 * for $\ell\in L$:
@@ -17,9 +17,13 @@ $e\in\mathbb{R}$.
   * if $a$, then assign $n\leftarrow n+1$;
 * return $n$.
 
+**Time complexity:** $O(|L|\cdot\max_{\ell\in L}(\text{len}(\ell)))$.
+
+**Space complexity:** $O(1)$.
+
 ## Part A
 
-**Algorithm 2** with list $\ell$ as an argument.
+**Algorithm 2** with list $\ell$ as an argument:
 
 * let $s\leftarrow 0$;
 * for $i\in(1,\dots,\mathrm{len}(\ell)-1)$:

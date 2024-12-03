@@ -75,9 +75,25 @@ int main()
             length++;
         }
 
-        if (main_step(items, length))
-        {
+        if (main_step(items, length)) {
             count++;
+            continue;
+        }
+
+        for (unsigned int i = 0; i < length; i++) {
+            int temp[MAX_LENGTH];
+            int temp_len = 0;
+
+            for (unsigned int j = 0; j < length; j++) {
+                if (j != i) {
+                    temp[temp_len++] = items[j];
+                }
+            }
+
+            if (main_step(temp, temp_len)) {
+                count++;
+                break;
+            }
         }
     }
 
