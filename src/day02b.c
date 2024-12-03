@@ -47,11 +47,6 @@ static int sgn(int x)
 
 static unsigned int main_step(List* l)
 {
-    if (!l->length)
-    {
-        return 0;
-    }
-
     int s = 0;
 
     for (unsigned int i = 1; i < l->length; i++)
@@ -79,7 +74,7 @@ static unsigned int main_step(List* l)
         }
     }
 
-    return 0;
+    return l->length;
 }
 
 int main()
@@ -103,7 +98,7 @@ int main()
 
         unsigned int i = main_step(&l);
 
-        if (i == 0)
+        if (i == l.length)
         {
             count++;
 
@@ -112,18 +107,33 @@ int main()
 
         List copy;
 
-        list_remove_at(&copy, &l, i - 1);
-
-        if (main_step(&copy) == 0)
+        if (i >= 2)
         {
-            count++;
+            list_remove_at(&copy, &l, i - 2);
 
-            continue;
+            if (main_step(&copy) == copy.length)
+            {
+                count++;
+
+                continue;
+            }
+        }
+
+        if (i >= 1)
+        {
+            list_remove_at(&copy, &l, i - 1);
+
+            if (main_step(&copy) == copy.length)
+            {
+                count++;
+
+                continue;
+            }
         }
 
         list_remove_at(&copy, &l, i);
 
-        if (main_step(&copy) == 0)
+        if (main_step(&copy) == copy.length)
         {
             count++;
         }
