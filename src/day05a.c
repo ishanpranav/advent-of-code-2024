@@ -1,4 +1,4 @@
-// day04a.c
+// day05a.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -20,9 +20,9 @@ struct Matrix
 
 typedef struct Matrix Matrix;
 
-static int main_step(Matrix* a, size_t i, size_t j, int di, int dj)
+static bool main_step(Matrix* a, size_t i, size_t j, int di, int dj)
 {
-    for (char* p = "XMAS"; *p; p++)
+    for (char* p = "MAS"; *p; p++)
     {
         if (i >= a->m || j >= a->n || a->items[i][j] != *p)
         {
@@ -34,6 +34,32 @@ static int main_step(Matrix* a, size_t i, size_t j, int di, int dj)
     }
 
     return true;
+}
+
+static size_t main_count(Matrix* a)
+{
+    if (a->m < 3 || a->n < 3)
+    {
+        return 0;
+    }
+
+    size_t count = 0;
+
+    for (size_t i = 1; i < a->m - 1; i++)
+    {
+        for (size_t j = 1; j < a->n - 1; j++)
+        {
+            if (main_step(a, i - 1, j - 1, 1, 1) +
+                main_step(a, i - 1, j + 1, 1, -1) +
+                main_step(a, i + 1, j - 1, -1, 1) +
+                main_step(a, i + 1, j + 1, -1, -1) == 2)
+            {
+                count++;
+            }
+        }
+    }
+
+    return count;
 }
 
 int main()
@@ -59,24 +85,7 @@ int main()
         }
     }
 
-    size_t x = 0;
-
-    for (size_t i = 0; i < a.m; i++)
-    {
-        for (size_t j = 0; j < a.n; j++)
-        {
-            x += main_step(&a, i, j, 1, 0)
-                + main_step(&a, i, j, -1, 0)
-                + main_step(&a, i, j, 0, -1)
-                + main_step(&a, i, j, 0, 1)
-                + main_step(&a, i, j, 1, 1)
-                + main_step(&a, i, j, 1, -1)
-                + main_step(&a, i, j, -1, 1)
-                + main_step(&a, i, j, -1, -1);
-        }
-    }
-
-    printf("%zu\n", x);
+    printf("%zu\n", main_count(&a));
 
     return 0;
 }
