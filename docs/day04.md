@@ -14,7 +14,7 @@ $\mathbf{v}$ be a $k$-element vector.
 **Algorithm 1:**
 
 * let $x\leftarrow 0$;
-* let $D\leftarrow\lbrace(1,0),(-1,0),(0,-1),(0,1),\\(1,1),(1,-1),(-1,1),(-1,-1)\rbrace$;
+* let $D\leftarrow\lbrace(1,0),(-1,0),(0,-1),(0,1),(1,1),(1,-1),(-1,1),(-1,-1)\rbrace$;
 * for $i\in(0,\dots,m-1)$:
   * for $j\in(0,\dots,n-1)$:
     * for $(\mathrm{d}i,\mathrm{d}j)\in D$:
