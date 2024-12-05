@@ -46,7 +46,7 @@ $\mathbf{v}$ be a $k$-element vector.
     * let $c_1\leftarrow$ invoke Algorithm 2 with arguments $i-1,j+1,\mathrm{d}i=1,\mathrm{d}j=-1$;
     * let $c_2\leftarrow$ invoke Algorithm 2 with arguments $i+1,j-1,\mathrm{d}i=-1,\mathrm{d}j=1$;
     * let $c_3\leftarrow$ invoke Algorithm 2 with arguments $i+1,j+1,\mathrm{d}i=-1,\mathrm{d}j=-1$;
-    * if $c_0+c_1+c_2+c_3=2$, then assign $c\leftarrow c+1$;
+    * if $c_0+c_1+c_2+c_3=2$, then assign $x\leftarrow x+1$;
 * return $x$.
 
 **Time complexity:** $O(kmn)=O(mn)$ for small $k$.
