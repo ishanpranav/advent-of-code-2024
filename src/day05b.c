@@ -19,7 +19,7 @@ typedef struct Edge Edge;
 struct Vertex
 {
     int color;
-    Edge* outEdges;
+    Edge* firstEdge;
 };
 
 typedef struct Vertex Vertex;
@@ -28,7 +28,7 @@ struct Edge
 {
     int source;
     int target;
-    Edge* next;
+    Edge* nextEdge;
 };
 
 struct Graph
@@ -60,8 +60,8 @@ static void graph_add_edge(Graph* g, int u, int v)
 
     edge->source = u;
     edge->target = v;
-    edge->next = g->vertices[u].outEdges;
-    g->vertices[u].outEdges = edge;
+    edge->nextEdge = g->vertices[u].firstEdge;
+    g->vertices[u].firstEdge = edge;
     g->edgeCount++;
 }
 
@@ -131,7 +131,7 @@ static int graph_sort_component(int results[MAX_VERTICES], Graph* g, int u)
         case 0:
             g->vertices[u].color = 1;
 
-            for (Edge* e = g->vertices[u].outEdges; e; e = e->next)
+            for (Edge* e = g->vertices[u].firstEdge; e; e = e->nextEdge)
             {
                 if (!g->vertices[e->target].color)
                 {
