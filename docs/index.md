@@ -15,10 +15,10 @@ for each solution.
 
 - [Day 1](/advent-of-code-2024/day01)
 - [Day 2](/advent-of-code-2024/day02)
-- [Day 3](/advent-of-code-2024/day03)
+- [Day 3](https://github.com/ishanpranav/advent-of-code-2024/blob/master/src/day03b.c)
 - [Day 4](/advent-of-code-2024/day04)
 - [Day 5](/advent-of-code-2024/day05)
-- [Day 6](/advent-of-code-2024/day06)
+- [Day 6](https://github.com/ishanpranav/advent-of-code-2024/blob/master/src/day06b.c)
 - [Day 7](/advent-of-code-2024/day07)
 - [Day 8](/advent-of-code-2024/day08)
 - [Day 9](/advent-of-code-2024/day09)
