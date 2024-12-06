@@ -1,4 +1,4 @@
-// day05a.c
+// day05b.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -18,7 +18,7 @@ typedef struct Edge Edge;
 
 struct Vertex
 {
-    int color;
+    unsigned int color;
     Edge* firstEdge;
 };
 
@@ -26,22 +26,22 @@ typedef struct Vertex Vertex;
 
 struct Edge
 {
-    int source;
-    int target;
+    unsigned int source;
+    unsigned int target;
     Edge* nextEdge;
 };
 
 struct Graph
 {
-    int edgeCount;
+    unsigned int edgeCount;
     Vertex vertices[MAX_VERTICES];
     Edge edges[MAX_EDGES];
 };
 
 struct Stack
 {
-    int size;
-    int vertices[MAX_VERTICES];
+    unsigned int size;
+    unsigned int vertices[MAX_VERTICES];
 };
 
 typedef struct Graph Graph;
@@ -54,7 +54,7 @@ static void graph(Graph* g)
     memset(g->vertices, 0, MAX_VERTICES * sizeof * g->vertices);
 }
 
-static void graph_add_edge(Graph* g, int u, int v)
+static void graph_add_edge(Graph* g, unsigned int u, unsigned int v)
 {
     Edge* edge = g->edges + g->edgeCount;
 
@@ -70,7 +70,7 @@ static void stack(Stack* s)
     s->size = 0;
 }
 
-static void stack_push(Stack* s, int v)
+static void stack_push(Stack* s, unsigned int v)
 {
     s->vertices[s->size] = v;
     s->size++;
@@ -87,17 +87,17 @@ static void stack_pop(Stack* s)
 }
 
 static bool sequence_equals(
-    const int* left,
-    int leftLength,
-    const int* right,
-    int rightLength)
+    const unsigned int* left,
+    unsigned int leftLength,
+    const unsigned int* right,
+    unsigned int rightLength)
 {
     if (leftLength != rightLength)
     {
         return false;
     }
 
-    for (int i = 0; i < leftLength; i++)
+    for (unsigned int i = 0; i < leftLength; i++)
     {
         if (left[i] != right[i])
         {
@@ -108,7 +108,10 @@ static bool sequence_equals(
     return true;
 }
 
-static int graph_sort_component(int results[MAX_VERTICES], Graph* g, int u)
+static unsigned int graph_sort_component(
+    unsigned int results[MAX_VERTICES], 
+    Graph* g, 
+    unsigned int u)
 {
     if (g->vertices[u].color)
     {
@@ -120,11 +123,11 @@ static int graph_sort_component(int results[MAX_VERTICES], Graph* g, int u)
     stack(&s);
     stack_push(&s, u);
 
-    int count = 0;
+    unsigned int count = 0;
 
     while (s.size)
     {
-        int u = stack_peek(&s);
+        unsigned int u = stack_peek(&s);
 
         switch (g->vertices[u].color)
         {
@@ -153,15 +156,15 @@ static int graph_sort_component(int results[MAX_VERTICES], Graph* g, int u)
     return count;
 }
 
-static int graph_sort(
-    int results[MAX_VERTICES],
-    int vertices[MAX_VERTICES],
-    int vertexCount,
+static unsigned int graph_sort(
+    unsigned int results[MAX_VERTICES],
+    unsigned int vertices[MAX_VERTICES],
+    unsigned int vertexCount,
     Graph* g)
 {
-    int count = 0;
+    unsigned int count = 0;
 
-    for (int i = 0; i < vertexCount; i++)
+    for (unsigned int i = 0; i < vertexCount; i++)
     {
         count += graph_sort_component(results + count, g, vertices[i]);
     }
@@ -184,8 +187,8 @@ int main()
             break;
         }
 
-        int u;
-        int v;
+        unsigned int u;
+        unsigned int v;
 
         if (sscanf(buffer, "%d|%d", &v, &u) != 2)
         {
@@ -195,17 +198,17 @@ int main()
         graph_add_edge(&parent, u, v);
     }
 
-    int n = 0;
+    unsigned int n = 0;
 
     while (fgets(buffer, BUFFER_SIZE, stdin))
     {
-        int vertices[MAX_VERTICES];
-        int vertexCount = 0;
+        unsigned int vertices[MAX_VERTICES];
+        unsigned int vertexCount = 0;
         bool subset[MAX_VERTICES] = { 0 };
 
         for (char* tok = strtok(buffer, ","); tok; tok = strtok(NULL, ","))
         {
-            int u = strtol(tok, NULL, 10);
+            unsigned int u = strtol(tok, NULL, 10);
 
             subset[u] = true;
             vertices[vertexCount] = u;
@@ -216,7 +219,7 @@ int main()
 
         graph(&subgraph);
 
-        for (const Edge* e = parent.edges; e < parent.edges + parent.edgeCount; e++)
+        for (Edge* e = parent.edges; e < parent.edges + parent.edgeCount; e++)
         {
             if (subset[e->source] && subset[e->target])
             {
@@ -224,8 +227,8 @@ int main()
             }
         }
 
-        int t[MAX_VERTICES];
-        int tLength = graph_sort(t, vertices, vertexCount, &subgraph);
+        unsigned int t[MAX_VERTICES];
+        unsigned int tLength = graph_sort(t, vertices, vertexCount, &subgraph);
 
         if (sequence_equals(vertices, vertexCount, t, tLength))
         {

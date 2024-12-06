@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #define MAX_N 1024
 
-static int main_compare(const void* p, const void* q)
+static int compare(const void* p, const void* q)
 {
     long a = *(const long*)p;
     long b = *(const long*)q;
@@ -37,8 +37,8 @@ int main()
         n++;
     }
 
-    qsort(a, n, sizeof * a, main_compare);
-    qsort(b, n, sizeof * b, main_compare);
+    qsort(a, n, sizeof * a, compare);
+    qsort(b, n, sizeof * b, compare);
     
     unsigned long sum = 0;
 
