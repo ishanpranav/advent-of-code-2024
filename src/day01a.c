@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #define MAX_N 1024
 
-static int compare(const void* p, const void* q)
+static int compare(const void* left, const void* right)
 {
-    long a = *(const long*)p;
-    long b = *(const long*)q;
+    long a = *(const long*)left;
+    long b = *(const long*)right;
 
     if (a < b)
     {
