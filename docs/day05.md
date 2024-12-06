@@ -6,7 +6,8 @@
 
 # Day 5: Print Queue
 
-Let $G=(V,E)$ be a directed graph. Let $X$ be a set of directed acyclic induced subgraphs of $G$ with ordered vertices.
+Let $G=(V,E)$ be a directed graph. Let $X$ be a set of directed acyclic induced
+subgraphs of $G$ with ordered vertices.
 
 ## Part A
 
