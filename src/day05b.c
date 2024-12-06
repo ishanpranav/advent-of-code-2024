@@ -219,7 +219,7 @@ int main()
 
         graph(&subgraph);
 
-        for (const Edge* e = parent.edges; e < parent.edges + parent.edgeCount; e++)
+        for (Edge* e = parent.edges; e < parent.edges + parent.edgeCount; e++)
         {
             if (subset[e->source] && subset[e->target])
             {
