@@ -1,4 +1,4 @@
-// day05a.c
+// day05b.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -227,7 +227,7 @@ int main()
         int t[MAX_VERTICES];
         int tLength = graph_sort(t, vertices, vertexCount, &subgraph);
 
-        if (sequence_equals(vertices, vertexCount, t, tLength))
+        if (!sequence_equals(vertices, vertexCount, t, tLength))
         {
             n += t[tLength / 2];
         }
