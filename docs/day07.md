@@ -6,8 +6,8 @@
 
 # Day 7: Bridge Repair
 
-Let $X\subseteq\mathbb{Z}$. Let $Y$ be a set of tuples where for all
-$(x,\ell)\in Y$, we have $x\in X$, and $\ell$ is a list where for all $e\in\ell$
+Let $X\subseteq\mathbb{Z}$. Let $L$ be a set of tuples where for all
+$(x,\ell)\in L$, we have $x\in X$, and $\ell$ is a list where for all $e\in\ell$
 we have $e\in X$. Let $n^\ast=\max_{(x,\ell)\in L}(\mathrm{len}(\ell))$.
 
 ## Part A
@@ -55,6 +55,6 @@ we have $e\in X$. Let $n^\ast=\max_{(x,\ell)\in L}(\mathrm{len}(\ell))$.
 * assign $p\leftarrow$ invoke Algorithm 4 with arguments $x,y',(s_1,\dots,s_n)$;
 * return $p$.
 
-**Time complexity:** $O(\lvert L\rvert\cdot 3^{n^\ast}\cdot\log{\lvert X\rvert})$.
+**Time complexity:** $O(\lvert L\rvert\cdot 3^{n^\ast})$.
 
 **Space complexity:** $O(n^\ast)$.

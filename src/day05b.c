@@ -51,7 +51,7 @@ static void graph(Graph* g)
 {
     g->edgeCount = 0;
 
-    memset(g->vertices, 0, MAX_VERTICES * sizeof * g->vertices);
+    memset(g->vertices, 0, sizeof g->vertices);
 }
 
 static void graph_add_edge(Graph* g, unsigned int u, unsigned int v)
