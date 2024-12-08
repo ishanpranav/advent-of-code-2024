@@ -47,12 +47,12 @@ we have $e\in X$. Let $n^\ast=\max_{(x,\ell)\in L}(\mathrm{len}(\ell))$.
 
 * if $\mathrm{len}(\ell)=0$, then return $x=y$;
 * if $y>x$, then return $\text{false}$;
-* let $p\leftarrow$ invoke Algorithm 2 with arguments $x,y+s_0,(s_1,\dots,s_n)$;
+* let $p\leftarrow$ invoke Algorithm 4 with arguments $x,y+s_0,(s_1,\dots,s_n)$;
 * if $p$, then return $\text{true}$;
-* assign $p\leftarrow$ invoke Algorithm 2 with arguments $x,y\cdot s_0,(s_1,\dots,s_n)$;
+* assign $p\leftarrow$ invoke Algorithm 4 with arguments $x,y\cdot s_0,(s_1,\dots,s_n)$;
 * if $p$, then return $\text{true}$;
 * let $y'\leftarrow y\cdot 10^{\lfloor\log_{10}{s_0}\rfloor+1}+s_0$;
-* assign $p\leftarrow$ invoke Algorithm 2 with arguments $x,y',(s_1,\dots,s_n)$;
+* assign $p\leftarrow$ invoke Algorithm 4 with arguments $x,y',(s_1,\dots,s_n)$;
 * return $p$.
 
 **Time complexity:** $O(\lvert L\rvert\cdot 3^{n^\ast}\cdot\log{\lvert X\rvert})$.
