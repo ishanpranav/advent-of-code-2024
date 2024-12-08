@@ -87,9 +87,9 @@ static void stack_pop(Stack* s)
 }
 
 static bool sequence_equals(
-    const unsigned int* left,
+    const unsigned int left[],
     unsigned int leftLength,
-    const unsigned int* right,
+    const unsigned int right[],
     unsigned int rightLength)
 {
     if (leftLength != rightLength)
