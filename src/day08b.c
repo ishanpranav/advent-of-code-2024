@@ -66,7 +66,7 @@ static size_t main_step(
             result++;
         }
 
-        for (const Coordinate* q = p->nextCoordinate; q; q = q->nextCoordinate)
+        for (const Coordinate* q = coordinates; q; q = q->nextCoordinate)
         {
             if (p == q)
             {
@@ -77,15 +77,6 @@ static size_t main_step(
             size_t dj = p->j - q->j;
 
             for (size_t i = p->i, j = p->j; i < m && j < n; i += di, j += dj)
-            {
-                if (!s[i][j])
-                {
-                    s[i][j] = true;
-                    result++;
-                }
-            }
-            
-            for (size_t i = q->i, j = q->j; i < m && j < n; i -= di, j -= dj)
             {
                 if (!s[i][j])
                 {

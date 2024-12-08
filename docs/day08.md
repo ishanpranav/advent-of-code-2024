@@ -40,9 +40,5 @@ Let $X\subseteq\mathbb{N}$. Let $m,n\in\mathbb{R}$. Let $L$ be a set where for a
       * let $(i,j)\leftarrow(p_i,p_j)$;
       * while $0\leq i\lt m$ and $0\leq j\lt n$:
         * assign $S\leftarrow S\cup\lbrace(i,j)\rbrace$;
-        * assign $(i,j)\leftarrow(i+\mathrm{d}i,j+\mathrm{d}j)$;
-      * assign $(i,j)\leftarrow(q_i,q_j)$;
-      * while $0\leq i\lt m$ and $0\leq j\lt n$:
-        * assign $S\leftarrow S\cup\lbrace(i,j)\rbrace$;
-        * assign $(i,j)\leftarrow(i-\mathrm{d}i,j-\mathrm{d}j)$;
+        * assign $(i,j)\leftarrow(i+\mathrm{d}i,j+\mathrm{d}j)$.
 * return $\lvert S\rvert$.
