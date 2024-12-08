@@ -20,7 +20,7 @@ struct Matrix
 
 typedef struct Matrix Matrix;
 
-static int main_step(Matrix* a, size_t i, size_t j, int di, int dj)
+static int main_step(const Matrix* a, size_t i, size_t j, int di, int dj)
 {
     for (char* p = "XMAS"; *p; p++)
     {

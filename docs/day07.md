@@ -8,7 +8,7 @@
 
 Let $X\subseteq\mathbb{Z}$. Let $Y$ be a set of tuples where for all
 $(x,\ell)\in Y$, we have $x\in X$, and $\ell$ is a list where for all $e\in\ell$
-we have $e\in X$.
+we have $e\in X$. Let $n^\ast=\max_{(x,\ell)\in L}(\mathrm{len}(\ell))$.
 
 ## Part A
 
@@ -29,9 +29,9 @@ we have $e\in X$.
 * assign $p\leftarrow$ invoke Algorithm 2 with arguments $x,y\cdot s_0,(s_1,\dots,s_n)$;
 * return $p$.
 
-**Time complexity:** $O(\lvert L\rvert\cdot\max_{(x,\ell)\in L}(\mathrm{len}(\ell)))$.
+**Time complexity:** $O(\lvert L\rvert\cdot 2^{n^\ast})$.
 
-**Space complexity:** $O(\max_{(x,\ell)\in L}(\mathrm{len}(\ell)))$.
+**Space complexity:** $O(n^\ast)$.
 
 ## Part B
 
@@ -55,6 +55,6 @@ we have $e\in X$.
 * assign $p\leftarrow$ invoke Algorithm 2 with arguments $x,y',(s_1,\dots,s_n)$;
 * return $p$.
 
-**Time complexity:** $O(\lvert L\rvert\cdot\max_{(x,\ell)\in L}(\mathrm{len}(\ell))\cdot\log{\lvert X\rvert})$.
+**Time complexity:** $O(\lvert L\rvert\cdot 3^{n^\ast}\cdot\log{\lvert X\rvert})$.
 
-**Space complexity:** $O(\max_{(x,\ell)\in L}(\mathrm{len}(\ell)))$.
+**Space complexity:** $O(n^\ast)$.

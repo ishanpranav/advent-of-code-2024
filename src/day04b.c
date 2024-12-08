@@ -20,7 +20,7 @@ struct Matrix
 
 typedef struct Matrix Matrix;
 
-static bool main_step(Matrix* a, size_t i, size_t j, int di, int dj)
+static bool main_step(const Matrix* a, size_t i, size_t j, int di, int dj)
 {
     for (char* p = "MAS"; *p; p++)
     {
@@ -36,7 +36,7 @@ static bool main_step(Matrix* a, size_t i, size_t j, int di, int dj)
     return true;
 }
 
-static size_t main_count(Matrix* a)
+static size_t main_count(const Matrix* a)
 {
     if (a->m < 3 || a->n < 3)
     {

@@ -38,7 +38,7 @@ typedef struct Coordinate Coordinate;
 typedef struct Matrix Matrix;
 typedef enum Hits Hits;
 
-size_t main_step(Coordinate* results, Matrix* a, Coordinate s)
+size_t main_step(Coordinate results[], const Matrix* a, Coordinate s)
 {
     int di = -1;
     int dj = 0;

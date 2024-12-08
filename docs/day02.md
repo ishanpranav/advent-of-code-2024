@@ -7,7 +7,7 @@
 # Day 2: Red-Nosed Reports
 
 Let $L$ be a set of lists where for all $\ell\in L$, for all $e\in\ell$, we have
-$e\in\mathbb{R}$.
+$e\in\mathbb{R}$. Let $n^\ast=\max_{\ell\in L}(\mathrm{len}(\ell))$.
 
 ## Part A
 
@@ -31,7 +31,7 @@ $e\in\mathbb{R}$.
     * assign $s\leftarrow\mathrm{sgn}(\ell_i-\ell_{i-1})$;
 * return $\mathrm{len}(\ell)$.
 
-**Time complexity:** $O(\lvert L\rvert\cdot\max_{\ell\in L}(\text{len}(\ell)))$.
+**Time complexity:** $O(\lvert L\rvert\cdot n^\ast)$.
 
 **Space complexity:** $O(1)$.
 
@@ -59,6 +59,6 @@ $e\in\mathbb{R}$.
       * continue to next $\ell$;
 * return $n$.
 
-**Time complexity:** $O(\lvert L\rvert\cdot\max_{\ell\in L}(\text{len}(\ell)))$.
+**Time complexity:** $O(\lvert L\rvert\cdot n^\ast)$.
 
 **Space complexity:** $O(1)$.

@@ -45,7 +45,7 @@ static int sgn(int x)
     return 0;
 }
 
-static unsigned int main_step(List* l)
+static unsigned int main_step(const List* l)
 {
     int s = 0;
 
