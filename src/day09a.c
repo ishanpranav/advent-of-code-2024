@@ -7,6 +7,7 @@
 #include <stdint.h> // size_max
 #include <stdio.h>
 #include <stdlib.h> // deque
+#define BUFFER_SIZE 32768
 
 struct Entry;
 
@@ -101,26 +102,30 @@ void deque_remove_last(Deque* instance)
 
 int main()
 {
+    char buffer[BUFFER_SIZE];
+    size_t read = fread(buffer, 1, BUFFER_SIZE - 1, stdin);
+
+    buffer[read] = '\0';
+
     Deque blocks = { 0 };
     size_t id = 0;
 
-    int c;
-
-    while ((c = getchar()) != EOF)
+    for (size_t i = 0; i < read; i++)
     {
-        for (char j = 0; j < c - '0'; j++)
+        for (char j = 0; j < buffer[i] - '0'; j++)
         {
             deque_add_last(&blocks, id);
         }
 
         id++;
-
-        if ((c = getchar()) == EOF)
+        i++;
+        
+        if (i >= read)
         {
             break;
         }
 
-        for (char j = 0; j < c - '0'; j++)
+        for (char j = 0; j < buffer[i] - '0'; j++)
         {
             deque_add_last(&blocks, SIZE_MAX);
         }
