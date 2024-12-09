@@ -4,7 +4,7 @@
 
 // Disk Fragmenter
 
-// NOTE: With `MAX_BLOCKS = 32768` and `MAX_IDS = MAX_BLOCKS * 9`, the program
+// NOTE: With `MAX_BLOCKS = 32768` and `MAX_IDS = (MAX_BLOCKS * 9)`, the program
 // cannot be stored on the stack.
 
 #include <stdint.h>
@@ -12,10 +12,6 @@
 #include <stdlib.h>
 #define MAX_BLOCKS 32768
 #define MAX_IDS (MAX_BLOCKS * 9)
-
-struct Entry;
-
-typedef struct Entry Entry;
 
 struct Deque
 {
@@ -26,10 +22,14 @@ struct Deque
 
 typedef struct Deque Deque;
 
-static void deque(Deque* instance)
+static Deque* deque()
 {
-    instance->first = NULL;
-    instance->last = NULL;
+    Deque* result = malloc(sizeof * result);
+
+    result->first = NULL;
+    result->last = NULL;
+
+    return result;
 }
 
 static void deque_add_last(Deque* instance, size_t id)
@@ -51,7 +51,7 @@ static void deque_add_last(Deque* instance, size_t id)
     *instance->last = id;
 }
 
-void deque_remove_first(Deque* instance)
+static void deque_remove_first(Deque* instance)
 {
     if (instance->first == instance->last)
     {
@@ -71,7 +71,7 @@ void deque_remove_first(Deque* instance)
     instance->first++;
 }
 
-void deque_remove_last(Deque* instance)
+static void deque_remove_last(Deque* instance)
 {
     if (instance->last == instance->first)
     {
@@ -95,14 +95,12 @@ int main()
 {
     char buffer[MAX_BLOCKS];
     size_t read = fread(buffer, 1, MAX_BLOCKS, stdin);
-    Deque* blocks = malloc(sizeof * blocks);
+    Deque* blocks = deque();
 
     if (!blocks)
     {
         return 1;
     }
-
-    deque(blocks);
 
     size_t id = 0;
 
