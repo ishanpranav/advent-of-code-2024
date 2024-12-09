@@ -4,114 +4,113 @@
 
 // Disk Fragmenter
 
-#include <stdint.h> // size_max
+// NOTE: With `MAX_BLOCKS = 32768` and `MAX_IDS = MAX_BLOCKS * 9`, the program
+// cannot be stored on the stack.
+
+#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h> // deque
-#define BUFFER_SIZE 32768
+#include <stdlib.h>
+#define MAX_BLOCKS 32768
+#define MAX_IDS (MAX_BLOCKS * 9)
 
 struct Entry;
 
 typedef struct Entry Entry;
 
-struct Entry
-{
-    size_t id;
-    Entry* next;
-    Entry* previous;
-};
-
 struct Deque
 {
-    // size_t count;
-    Entry* first;
-    Entry* last;
+    size_t ids[MAX_IDS];
+    size_t* first;
+    size_t* last;
 };
 
 typedef struct Deque Deque;
 
-void deque_add_last(Deque* instance, size_t id)
+static void deque(Deque* instance)
 {
-    Entry* added = malloc(sizeof * added);
+    instance->first = NULL;
+    instance->last = NULL;
+}
 
-    added->id = id;
-    added->next = NULL;
-    added->previous = instance->last;
-
-    if (instance->last)
+static void deque_add_last(Deque* instance, size_t id)
+{
+    if (!instance->last)
     {
-        instance->last->next = added;
+        instance->first = instance->ids;
+        instance->last = instance->ids;
+    }
+    else if (instance->last == instance->ids + MAX_IDS - 1)
+    {
+        instance->last = instance->ids;
     }
     else
     {
-        instance->first = added;
+        instance->last++;
     }
 
-    instance->last = added;
-    // instance->count++;
+    *instance->last = id;
 }
 
 void deque_remove_first(Deque* instance)
 {
-    if (!instance->first)
+    if (instance->first == instance->last)
     {
+        instance->first = NULL;
+        instance->last = NULL;
+        
         return;
     }
 
-    Entry* removed = instance->first;
-
-    instance->first = instance->first->next;
-
-    if (instance->first)
+    if (instance->first == instance->ids + MAX_IDS - 1)
     {
-        instance->first->previous = NULL;
-    }
-    else
-    {
-        instance->last = NULL;
+        instance->first = instance->ids;
+
+        return;
     }
 
-    free(removed);
-
-    // instance->count--;
+    instance->first++;
 }
 
 void deque_remove_last(Deque* instance)
 {
-    if (!instance->last)
+    if (instance->last == instance->first)
     {
+        instance->first = NULL;
+        instance->last = NULL;
+        
         return;
     }
 
-    Entry* removed = instance->last;
-
-    instance->last = instance->last->previous;
-
-    if (instance->last)
+    if (instance->last == instance->ids)
     {
-        instance->last->next = NULL;
-    }
-    else
-    {
-        instance->first = NULL;
+        instance->last = instance->ids + MAX_IDS - 1;
+
+        return;
     }
 
-    free(removed);
-
-    // instance->count--;
+    instance->last--;
 }
 
 int main()
 {
-    char buffer[BUFFER_SIZE];
-    size_t read = fread(buffer, 1, BUFFER_SIZE, stdin);
-    Deque blocks = { 0 };
+    char buffer[MAX_BLOCKS];
+    size_t read = fread(buffer, 1, MAX_BLOCKS, stdin);
+    Deque* blocks = malloc(sizeof * blocks);
+
+    if (!blocks)
+    {
+        return 1;
+    }
+
+    deque(blocks);
+
     size_t id = 0;
 
     for (size_t i = 0; i < read; i++)
     {
         for (char j = 0; j < buffer[i] - '0'; j++)
         {
-            deque_add_last(&blocks, id);
+            deque_add_last(blocks, id);
         }
 
         id++;
@@ -124,32 +123,33 @@ int main()
 
         for (char j = 0; j < buffer[i] - '0'; j++)
         {
-            deque_add_last(&blocks, SIZE_MAX);
+            deque_add_last(blocks, SIZE_MAX);
         }
     }
 
-    size_t i = 0;
+    size_t offset = 0;
     size_t checksum = 0;
 
-    while (blocks.first)
+    while (blocks->first)
     {
-        size_t id = blocks.first->id;
+        size_t id = *blocks->first;
 
-        deque_remove_first(&blocks);
+        deque_remove_first(blocks);
 
-        while (id == SIZE_MAX && blocks.last)
+        while (id == SIZE_MAX && blocks->last)
         {
-            id = blocks.last->id;
+            id = *blocks->last;
 
-            deque_remove_last(&blocks);
+            deque_remove_last(blocks);
         }
 
         if (id != SIZE_MAX)
         {
-            checksum += i * id;
-            i++;
+            checksum += offset * id;
+            offset++;
         }
     }
 
+    free(blocks);
     printf("%zu\n", checksum);
 }

@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #define MAX_VERTICES 128
-#define MAX_EDGES 2048
 #define BUFFER_SIZE 128
 
 struct Edge;
@@ -35,7 +34,7 @@ struct Graph
 {
     unsigned int edgeCount;
     Vertex vertices[MAX_VERTICES];
-    Edge edges[MAX_EDGES];
+    Edge edges[MAX_VERTICES * (MAX_VERTICES - 1)];
 };
 
 struct Stack

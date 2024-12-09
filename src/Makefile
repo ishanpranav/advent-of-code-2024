@@ -3,7 +3,7 @@
 # Licensed under the MIT license.
 
 CC = clang
-CFLAGS = -O3 -pedantic -std=c99 -Wall -Wextra
+CFLAGS = -O3 -gdwarf-4 -pedantic -std=c99 -Wall -Wextra
 
 all: day01a day01b day02a day02b day03a day03b day04a day04b day05a day05b \
 	day06a day06b day07a day07b day08a day08b day09a day09b day10a day10b \
