@@ -22,7 +22,7 @@ typedef struct Matrix Matrix;
 
 static bool main_step(const Matrix* a, size_t i, size_t j, int di, int dj)
 {
-    for (char* p = "MAS"; *p; p++)
+    for (const char* p = "MAS"; *p; p++)
     {
         if (i >= a->m || j >= a->n || a->items[i][j] != *p)
         {

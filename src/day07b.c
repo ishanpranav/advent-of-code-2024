@@ -44,7 +44,7 @@ int main()
 
     while (fgets(buffer, BUFFER_SIZE, stdin))
     {
-        char* line = buffer;
+        const char* line = buffer;
         int offset;
         long long x;
 

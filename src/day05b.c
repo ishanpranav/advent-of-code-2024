@@ -206,9 +206,9 @@ int main()
         unsigned int vertexCount = 0;
         bool subset[MAX_VERTICES] = { 0 };
 
-        for (char* tok = strtok(buffer, ","); tok; tok = strtok(NULL, ","))
+        for (char* p = strtok(buffer, ","); p; p = strtok(NULL, ","))
         {
-            unsigned int u = strtol(tok, NULL, 10);
+            unsigned int u = strtol(p, NULL, 10);
 
             subset[u] = true;
             vertices[vertexCount] = u;

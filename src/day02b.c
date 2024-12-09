@@ -84,7 +84,7 @@ int main()
 
     while (fgets(buffer, sizeof buffer, stdin))
     {
-        char* line = buffer;
+        const char* line = buffer;
         List l;
         int offset;
 
