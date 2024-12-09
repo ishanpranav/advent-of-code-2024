@@ -103,10 +103,7 @@ void deque_remove_last(Deque* instance)
 int main()
 {
     char buffer[BUFFER_SIZE];
-    size_t read = fread(buffer, 1, BUFFER_SIZE - 1, stdin);
-
-    buffer[read] = '\0';
-
+    size_t read = fread(buffer, 1, BUFFER_SIZE, stdin);
     Deque blocks = { 0 };
     size_t id = 0;
 
