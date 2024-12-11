@@ -148,4 +148,6 @@ int main()
     }
 
     printf("%zu\n", count);
+
+    return 0;
 }

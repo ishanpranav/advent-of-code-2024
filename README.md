@@ -13,9 +13,9 @@ for each solution.
 
 ## Acknowledgements
 
-**Day 9:** My original algorithm for Day 9(a) was not possible using $O(1)$
-space. The algorithm with $O(1)$ space complexity comes from the impressive work
-at [maneatingape/advent-of-code-rust](https://github.com/maneatingape/advent-of-code-rust).
+**Day 9:** My original algorithm for Day 9(a) and Day 9(b) had space complexity
+exceeding $O(1)$. The algorithm with $O(1)$ space complexity comes from the
+impressive work at [maneatingape/advent-of-code-rust](https://github.com/maneatingape/advent-of-code-rust).
 
 ## Usage
 

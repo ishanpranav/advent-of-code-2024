@@ -91,4 +91,6 @@ int main()
     }
 
     printf("%zu\n", k);
+
+    return 0;
 }

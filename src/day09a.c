@@ -79,4 +79,6 @@ int main()
 
     main_step(&checksum, &offset, right / 2, needed);
     printf("%zu\n", checksum);
+
+    return 0;
 }
