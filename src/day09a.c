@@ -43,8 +43,7 @@ static size_t main_step(size_t* blocks, size_t blockCount)
             }
         }
 
-        blocks[left] = blocks[right];
-        result += left * blocks[left];
+        result += left * blocks[right];
         left++;
         right--;
     }
