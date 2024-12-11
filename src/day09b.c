@@ -287,19 +287,6 @@ int main()
         left++;
     }
 
-    size_t length = offset;
-    size_t* blocks = malloc(length * sizeof * blocks);
-
-    if (!blocks)
-    {
-        return 1;
-    }
-
-    for (size_t i = 0; i < length; i++)
-    {
-        blocks[i] = SIZE_MAX;
-    }
-
     size_t right = read - 2 + (read % 2);
     size_t checksum = 0;
 
@@ -324,11 +311,6 @@ int main()
                     nextIndex = i;
                 }
             }
-        }
-
-        for (unsigned int i = 0; i < s; i++)
-        {
-            blocks[nextOffset + i] = right / 2;
         }
 
         checksum += (right / 2) * (s * (nextOffset + nextOffset + s - 1)) / 2;
