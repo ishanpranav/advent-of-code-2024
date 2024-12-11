@@ -12,61 +12,42 @@
 #include <string.h>
 #define BUFFER_SIZE 32768
 
-typedef int (*Comparer)(const void* left, const void* right);
-
 struct PriorityQueue
 {
-    int (*priorityComparer)(const void* left, const void* right);
-    
-    void* items;
-    void* priorities;
-    size_t itemSize;
-    size_t prioritySize;
     size_t count;
     size_t capacity;
+    size_t* items;
 };
 
-typedef struct PriorityQueue* PriorityQueue;
+typedef struct PriorityQueue PriorityQueue;
 
-int priority_queue(
-    PriorityQueue instance,
-    size_t itemSize,
-    size_t prioritySize,
-    size_t capacity,
-    Comparer priorityComparer)
+static int priority_queue(PriorityQueue* instance, size_t capacity)
 {
     if (capacity < 4)
     {
         capacity = 4;
     }
 
-    instance->items = malloc((capacity + 1) * itemSize);
+    instance->items = malloc((capacity + 1) * sizeof * instance->items);
 
     if (!instance->items)
     {
         return -1;
     }
 
-    instance->priorities = malloc((capacity + 1) * prioritySize);
-
-    if (!instance->priorities)
-    {
-        free(instance->items);
-
-        return -1;
-    }
-
-    instance->itemSize = itemSize;
-    instance->prioritySize = prioritySize;
     instance->count = 0;
     instance->capacity = capacity;
-    instance->priorityComparer = priorityComparer;
 
     return 0;
 }
 
-int priority_queue_ensure_capacity(
-    PriorityQueue instance,
+static size_t priority_queue_peek(const PriorityQueue* instance)
+{
+    return instance->items[1];
+}
+
+static int priority_queue_ensure_capacity(
+    PriorityQueue* instance,
     size_t capacity)
 {
     if (instance->capacity >= capacity)
@@ -81,39 +62,22 @@ int priority_queue_ensure_capacity(
         newCapacity = capacity;
     }
 
-    void* newItems = realloc(
-        instance->items,
-        (newCapacity + 1) * instance->itemSize);
+    size_t* newItems = realloc(
+        instance->items, 
+        (newCapacity + 1) * sizeof * newItems);
 
     if (!newItems)
     {
         return -1;
     }
 
-    void* newPriorities = realloc(
-        instance->priorities,
-        (newCapacity + 1) * instance->prioritySize);
-
-    if (!newPriorities)
-    {
-        instance->items = realloc(
-            instance->items,
-            (instance->capacity + 1) * instance->itemSize);
-
-        return -1;
-    }
-
     instance->capacity = newCapacity;
     instance->items = newItems;
-    instance->priorities = newPriorities;
 
     return 0;
 }
 
-int priority_queue_enqueue(
-    PriorityQueue instance,
-    void* item,
-    void* priority)
+static int priority_queue_enqueue(PriorityQueue* instance, size_t item)
 {
     int ex = priority_queue_ensure_capacity(
         instance,
@@ -126,40 +90,22 @@ int priority_queue_enqueue(
 
     instance->count++;
 
-    char* p = instance->items;
-    char* q = instance->priorities;
     size_t i = instance->count;
-    size_t itemSize = instance->itemSize;
-    size_t prioritySize = instance->prioritySize;
-    Comparer compare = instance->priorityComparer;
 
-    while (i != 1 && compare(priority, q + (i / 2) * prioritySize) < 0)
+    while (i != 1 && item < instance->items[i / 2])
     {
         size_t j = i / 2;
 
-        memcpy(p + i * itemSize, p + j * itemSize, itemSize);
-        memcpy(q + i * prioritySize, q + j * prioritySize, prioritySize);
-
+        instance->items[i] = instance->items[j];
         i = j;
     }
 
-    if (item)
-    {
-        memcpy(p + i * itemSize, item, instance->itemSize);
-    }
-
-    if (priority)
-    {
-        memcpy(q + i * prioritySize, priority, instance->prioritySize);
-    }
+    instance->items[i] = item;
 
     return 0;
 }
 
-bool priority_queue_try_dequeue(
-    PriorityQueue instance,
-    void* item,
-    void* priority)
+static bool priority_queue_try_dequeue(PriorityQueue* instance, size_t* item)
 {
     size_t i = 1;
     size_t child = 2;
@@ -169,98 +115,60 @@ bool priority_queue_try_dequeue(
         return false;
     }
 
-    char* p = instance->items;
-    char* q = instance->priorities;
-    size_t itemSize = instance->itemSize;
-    size_t prioritySize = instance->prioritySize;
-    Comparer compare = instance->priorityComparer;
-
     if (item)
     {
-        memcpy(item, p + itemSize, itemSize);
+        *item = instance->items[0];
     }
 
-    if (priority)
-    {
-        memcpy(priority, q + prioritySize, prioritySize);
-    }
-
-    memcpy(p, p + instance->count * itemSize, itemSize);
-    memcpy(q, q + instance->count * prioritySize, prioritySize);
-
+    instance->items[0] = instance->items[instance->count];
+    
     while (child < instance->count)
     {
-        if (child < instance->count - 1 && compare(
-            q + child * prioritySize, 
-            q + (child + 1) * prioritySize) > 0)
+        if (child < instance->count - 1 &&
+            instance->items[child] > instance->items[child + 1])
         {
             child++;
         }
 
-        if (compare(q, q + child * prioritySize) <= 0)
+        if (instance->items[0] <= instance->items[child])
         {
             break;
         }
 
-        memcpy(p + i * itemSize, p + child * itemSize, itemSize);
-        memcpy(q + i * prioritySize, q + child * prioritySize, prioritySize);
-
+        instance->items[i] = instance->items[child];
         i = child;
         child *= 2;
     }
 
-    memcpy(p + i * itemSize, p, itemSize);
-    memcpy(q + i * prioritySize, q, prioritySize);
-
+    instance->items[i] = instance->items[0];
     instance->count--;
 
     return true;
 }
 
-void priority_queue_clear(PriorityQueue instance)
+static void finalize_priority_queue(PriorityQueue* instance)
 {
-    instance->count = 0;
-}
-
-void finalize_priority_queue(PriorityQueue instance)
-{
-    priority_queue_clear(instance);
     free(instance->items);
-    free(instance->priorities);
 
     instance->items = NULL;
-    instance->itemSize = 0;
-    instance->priorities = NULL;
-    instance->prioritySize = 0;
+    instance->count = 0;
     instance->capacity = 0;
-    instance->priorityComparer = NULL;
-}
-
-static int cmp(const void* left, const void* right) 
-{
-    size_t p = *(const size_t*)left;
-    size_t q = *(const size_t*)right;
-
-    if (p < q) { return -1; }
-    if (p > q) { return 1; }
-
-    return 0;
 }
 
 int main()
 {
     char buffer[BUFFER_SIZE];
     size_t read = fread(buffer, 1, BUFFER_SIZE, stdin);
-    struct PriorityQueue queues[10];
+    struct PriorityQueue queues[9];
 
     while (read && isspace(buffer[read - 1]))
     {
         read--;
     }
 
-    for (unsigned int i = 0; i < 10; i++)
+    for (unsigned int i = 1; i <= 9; i++)
     {
-        priority_queue(queues + i, sizeof(size_t), sizeof(size_t), 0, cmp);
+        priority_queue(queues + i - 1, 0);
     }
 
     size_t offset = 0;
@@ -280,7 +188,7 @@ int main()
 
         if (size)
         {
-            priority_queue_enqueue(queues + size, &offset, &offset);
+            priority_queue_enqueue(queues + size - 1, offset);
         }
         
         offset += size;
@@ -292,40 +200,38 @@ int main()
 
     while (right != SIZE_MAX)
     {
-        unsigned int s = buffer[right] - '0';
+        unsigned int size = buffer[right] - '0';
 
-        offset -= s;
+        offset -= size;
 
         size_t nextOffset = offset;
         size_t nextIndex = SIZE_MAX;
 
-        for (unsigned int i = s; i < 10; i++)
+        for (unsigned int i = size; i < 10; i++)
         {
-            if (queues[i].count)
+            if (queues[i - 1].count)
             {
-                size_t* items = (size_t*)queues[i].items + 1;
+                size_t minOffset = priority_queue_peek(queues + i - 1);
 
-                if (*items < nextOffset)
+                if (minOffset < nextOffset)
                 {
-                    nextOffset = *items;
+                    nextOffset = minOffset;
                     nextIndex = i;
                 }
             }
         }
 
-        checksum += (right / 2) * (s * (nextOffset + nextOffset + s - 1)) / 2;
+        checksum += right * (size * (nextOffset + nextOffset + size - 1));
 
         if (nextIndex != SIZE_MAX)
         {
-            priority_queue_try_dequeue(queues + nextIndex, NULL, NULL);
+            priority_queue_try_dequeue(queues + nextIndex - 1, NULL);
 
-            unsigned long long to = nextIndex - s;
+            unsigned long long to = nextIndex - size;
         
             if (to > 0)
             {
-                size_t value = nextOffset + s;
-    
-                priority_queue_enqueue(queues + to, &value, &value);
+                priority_queue_enqueue(queues + to - 1, nextOffset + size);
             }
         }
 
@@ -340,7 +246,12 @@ int main()
         right--;
     }
 
-    printf("%zu\n", checksum);
+    for (unsigned int i = 1; i <= 9; i++)
+    {
+        finalize_priority_queue(queues + i - 1);
+    }
+
+    printf("%zu\n", checksum / 4);
 
     return 0;
 }

@@ -10,18 +10,6 @@
 #include <stdlib.h>
 #define BUFFER_SIZE 32768
 
-static void main_step(
-    size_t* checksum,
-    size_t* offset,
-    size_t id,
-    unsigned int size)
-{
-    size_t k = *offset;
-
-    *checksum += id * (size * (k + k + size - 1)) / 2;
-    *offset = k + size;
-}
-
 int main()
 {
     char buffer[BUFFER_SIZE];
@@ -34,13 +22,16 @@ int main()
 
     size_t left = 0;
     size_t right = read - 2 + (read % 2);
-    unsigned int needed = buffer[right] - '0';
-    size_t offset = 0;
     size_t checksum = 0;
+    size_t offset = 0;
+    unsigned int needed = buffer[right] - '0';
 
     while (left < right)
     {
-        main_step(&checksum, &offset, left / 2, buffer[left] - '0');
+        unsigned int size = buffer[left] - '0';
+
+        checksum += left * (size * (offset + offset + size - 1));
+        offset += size;
 
         unsigned int available = buffer[left + 1] - '0';
 
@@ -59,8 +50,6 @@ int main()
                 needed = buffer[right] - '0';
             }
 
-            size_t size;
-
             if (needed < available)
             {
                 size = needed;
@@ -70,15 +59,17 @@ int main()
                 size = available;
             }
 
-            main_step(&checksum, &offset, right / 2, size);
-
+            checksum += right * (size * (offset + offset + size - 1));
+            offset += size;
             available -= size;
             needed -= size;
         }
     }
 
-    main_step(&checksum, &offset, right / 2, needed);
-    printf("%zu\n", checksum);
+    checksum += right * (needed * (offset + offset + needed - 1));
+    offset += needed;
+    
+    printf("%zu\n", checksum / 4);
 
     return 0;
 }
