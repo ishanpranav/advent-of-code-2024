@@ -116,7 +116,7 @@ int main()
     {
         n = strlen(buffer);
 
-        while (n > 0 && isspace(buffer[n - 1]))
+        while (n && isspace(buffer[n - 1]))
         {
             n--;
         }

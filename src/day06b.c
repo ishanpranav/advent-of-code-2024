@@ -119,7 +119,7 @@ int main()
     {
         a.n = strlen(a.items[0]);
 
-        while (a.n > 0 && isspace(a.items[0][a.n - 1]))
+        while (a.n && isspace(a.items[0][a.n - 1]))
         {
             a.n--;
         }

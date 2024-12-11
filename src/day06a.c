@@ -23,7 +23,7 @@ int main()
     {
         n = strlen(a[0]);
 
-        while (n > 0 && isspace(a[0][n - 1]))
+        while (n && isspace(a[0][n - 1]))
         {
             n--;
         }
