@@ -14,44 +14,66 @@
 #define MAX_READ 32768
 #define MAX_BLOCKS (MAX_READ * 9)
 
-static size_t main_step(size_t* blocks, size_t blockCount)
+static void main_update(
+    size_t* checksum,
+    size_t* offset,
+    size_t id,
+    unsigned int size)
+{
+    size_t k = *offset;
+
+    *checksum += id * (size * (k + k + size - 1)) / 2;
+    *offset = k + size;
+}
+
+static size_t main_step(char buffer[MAX_READ], size_t read)
 {
     size_t left = 0;
-    size_t right = blockCount - 1;
+    size_t right = read - 2 + (read % 2);
+    unsigned int needed = buffer[right] - '0';
+    size_t offset = 0;
     size_t result = 0;
 
     while (left < right)
     {
-        while (blocks[left] != SIZE_MAX)
+        main_update(&result, &offset, left / 2, buffer[left] - '0');
+
+        unsigned int available = buffer[left + 1] - '0';
+
+        left += 2;
+
+        while (available > 0) 
         {
-            result += left * blocks[left];
-            left++;
-
-            if (left == right)
+            if (needed == 0) 
             {
-                return result;
+                if (left == right) 
+                {
+                    break;
+                }
+
+                right -= 2;
+                needed = buffer[right] - '0';
             }
-        }
 
-        while (blocks[right] == SIZE_MAX)
-        {
-            right--;
+            size_t size;
 
-            if (left == right)
+            if (needed < available) 
             {
-                return result;
+                size = needed;
             }
-        }
+            else 
+            {
+                size = available;
+            }
 
-        result += left * blocks[right];
-        left++;
-        right--;
+            main_update(&result, &offset, right / 2, size);
+
+            available -= size;
+            needed -= size;
+        }
     }
 
-    if (left < blockCount && blocks[left] != SIZE_MAX)
-    {
-        result += left * blocks[left];
-    }
+    main_update(&result, &offset, right / 2, needed);
 
     return result;
 }
@@ -99,7 +121,7 @@ int main()
         }
     }
 
-    size_t checksum = main_step(blocks, blockCount);
+    size_t checksum = main_step(buffer, read);
 
     free(blocks);
     printf("%zu\n", checksum);
