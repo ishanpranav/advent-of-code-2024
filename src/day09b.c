@@ -227,9 +227,9 @@ int main()
         {
             priority_queue_try_dequeue(queues + nextIndex - 1, NULL);
 
-            unsigned long long to = nextIndex - size;
+            size_t to = nextIndex - size;
         
-            if (to > 0)
+            if (to)
             {
                 priority_queue_enqueue(queues + to - 1, nextOffset + size);
             }
