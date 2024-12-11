@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #define BUFFER_SIZE 32768
 
 struct PriorityQueue
