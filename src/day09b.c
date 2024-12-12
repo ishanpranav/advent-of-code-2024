@@ -133,12 +133,17 @@ static void priority_queue_dequeue(PriorityQueue* instance)
     instance->count--;
 }
 
+static void priority_queue_clear(PriorityQueue* instance)
+{
+    instance->count = 0;
+}
+
 static void finalize_priority_queue(PriorityQueue* instance)
 {
+    priority_queue_clear(instance);
     free(instance->items);
 
     instance->items = NULL;
-    instance->count = 0;
     instance->capacity = 0;
 }
 

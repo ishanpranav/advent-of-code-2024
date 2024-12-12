@@ -5,84 +5,263 @@
 // Plutonian Pebbles
 
 #include <math.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #ifndef DAY11
 #define DAY11
 #define K 25
+#define MAX_LOAD_FACTOR 1.0
 #endif
-#define MAX_LIST 10000
+#define HASH_PRIMES_COUNT 26
 
 typedef struct Entry Entry;
 
 struct Entry
 {
-    unsigned long long n;
+    unsigned long long key;
     unsigned long long value;
     Entry* nextEntry;
 };
 
 struct Dictionary
 {
-    Entry* entries[K][MAX_LIST];
+    Entry** entries;
+    size_t count;
+    size_t capacity;
 };
 
 typedef struct Dictionary Dictionary;
 
-unsigned long long dictionary_get(
-    Dictionary* instance,
-    unsigned int k,
-    unsigned long long n)
+/** See https://planetmath.org/goodhashtableprimes. */
+static const size_t HASH_PRIMES[HASH_PRIMES_COUNT] = 
 {
-    for (Entry* p = instance->entries[k][n % MAX_LIST]; p; p = p->nextEntry)
+    53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157l, 98317l,
+    196613l, 393241l, 786433l, 1572869l, 3145739l, 6291469l, 12582917l,
+    25165843l, 50331653l, 100663319l, 201326611l, 402653189l, 805306457l,
+    1610612741l
+};
+
+static size_t binary_search_min(size_t min, const size_t* items, size_t length)
+{
+    if (!length)
     {
-        if (p->n == n)
+        return min;
+    }
+
+    size_t left = 0;
+    size_t right = length - 1;
+
+    while (left < right)
+    {
+        size_t index = left + (right - left) / 2;
+
+        if (items[index] < min)
         {
-            return p->value;
+            left = index + 1;
+        }
+        else if (items[index] > min)
+        {
+            right = index;
+        }
+        else
+        {
+            return items[index];
+        }
+    }
+
+    return items[right];
+}
+
+static size_t dictionary_min_capacity(size_t capacity)
+{
+    if (capacity < HASH_PRIMES[0])
+    {
+        return HASH_PRIMES[0];
+    }
+
+    return capacity;
+}
+
+static size_t dictionary_new_capacity(size_t count, size_t capacity)
+{
+    capacity *= 1.5;
+
+    size_t prime = binary_search_min(capacity, HASH_PRIMES, HASH_PRIMES_COUNT);
+    
+    if (prime > capacity)
+    {
+        capacity = prime;
+    }
+
+    if (count > capacity)
+    {
+        return count;
+    }
+
+    return capacity;
+}
+
+static int dictionary(Dictionary* instance, size_t capacity)
+{
+    instance->capacity = dictionary_min_capacity(capacity);
+    instance->entries = calloc(instance->capacity, sizeof * instance->entries);
+
+    if (!instance->entries)
+    {
+        return -1;
+    }
+
+    instance->count = 0;
+
+    return 0;
+}
+
+static unsigned long long dictionary_get(
+    const Dictionary* instance,
+    unsigned long long key)
+{
+    size_t i = key % instance->capacity;
+
+    for (Entry* entry = instance->entries[i]; entry; entry = entry->nextEntry)
+    {
+        if (entry->key == key)
+        {
+            return entry->value;
         }
     }
 
     return 0;
 }
 
-#include <stdlib.h>
-
-void dictionary_set(Dictionary* instance, unsigned int k, unsigned long long n, unsigned long long value)
+static void dictionary_clear(Dictionary* instance)
 {
-    unsigned long long i = n % MAX_LIST;
-
-    for (Entry* p = instance->entries[k][i]; p; p = p->nextEntry)
+    for (size_t i = 0; i < instance->capacity; i++)
     {
-        if (p->n == n)
-        {
-            p->value = value;
+        Entry* current = instance->entries[i];
 
-            return;
+        while (current)
+        {
+            Entry* next = current->nextEntry;
+
+            free(current);
+
+            current = next;
         }
+
+        instance->entries[i] = NULL;
     }
-    
-    Entry* entry = malloc(sizeof * entry);
-    entry->n = n;
-    entry->nextEntry = instance->entries[k][i];
-    entry->value = value;
-    instance->entries[k][i] = entry;
+
+    instance->count = 0;
 }
 
-unsigned long long main_step(
-    Dictionary* table,
+static void finalize_dictionary(Dictionary* instance)
+{
+    dictionary_clear(instance);
+    free(instance->entries);
+
+    instance->entries = NULL;
+    instance->capacity = 0;
+}
+
+static int dictionary_copy(Dictionary* result, const Dictionary* instance);
+
+static int dictionary_set(
+    Dictionary* instance, 
+    unsigned long long key, 
+    unsigned long long value)
+{
+    size_t i = key % instance->capacity;
+    size_t chainLength = 0;
+    Entry** p;
+
+    for (p = instance->entries + i; *p; p = &(*p)->nextEntry)
+    {
+        chainLength++;
+
+        if ((*p)->key == key)
+        {
+            (*p)->value = value;
+
+            return 0;
+        }
+    }
+
+    Entry* entry = malloc(sizeof * entry);
+
+    if (!entry)
+    {
+        return -1;
+    }
+
+    entry->key = key;
+    entry->value = value;
+    entry->nextEntry = NULL;
+    *p = entry;
+    instance->count++;
+
+    if ((double)instance->count / instance->capacity > MAX_LOAD_FACTOR)
+    {
+        Dictionary clone;
+
+        if (dictionary_copy(&clone, instance))
+        {
+            return 0;
+        }
+
+        finalize_dictionary(instance);
+        
+        *instance = clone;
+    }
+
+    return 0;
+}
+
+static int dictionary_copy(Dictionary* result, const Dictionary* instance)
+{
+    size_t capacity = instance->capacity;
+    size_t newCapacity = dictionary_new_capacity(instance->count, capacity);
+    int ex = dictionary(result, newCapacity);
+
+    if (ex)
+    {
+        return ex;
+    }
+
+    for (size_t i = 0; i < capacity; i++)
+    {
+        for (Entry* p = instance->entries[i]; p; p = p->nextEntry)
+        {
+            ex = dictionary_set(result, p->key, p->value);
+
+            if (ex)
+            {
+                finalize_dictionary(result);
+
+                return ex;
+            }
+        }
+    }
+
+    return 0;
+}
+
+static unsigned long long main_step(
+    Dictionary tables[K],
     unsigned int k,
     unsigned long long n)
 {
-    if (k == K)
+    if (k == 0)
     {
         return 1;
     }
 
     if (n == 0)
     {
-        return main_step(table, k + 1, 1);
+        return main_step(tables, k - 1, 1);
     }
 
-    unsigned long long result = dictionary_get(table, k, n);
+    unsigned long long result = dictionary_get(tables + k - 1, n);
 
     if (result)
     {
@@ -94,17 +273,17 @@ unsigned long long main_step(
     if (d % 2 == 0)
     {
         unsigned long mask = pow(10, d / 2);
-        unsigned long a = main_step(table, k + 1, n % mask);
-        unsigned long b = main_step(table, k + 1, n / mask);
+        unsigned long a = main_step(tables, k - 1, n % mask);
+        unsigned long b = main_step(tables, k - 1, n / mask);
 
-        dictionary_set(table, k, n, a + b);
+        dictionary_set(tables + k - 1, n, a + b);
 
         return a + b;
     }
 
-    unsigned long a = main_step(table, k + 1, 2024 * n);
+    unsigned long a = main_step(tables, k - 1, 2024 * n);
 
-    dictionary_set(table, k, n, a);
+    dictionary_set(tables + k - 1, n, a);
 
     return a;
 }
@@ -113,82 +292,26 @@ int main()
 {
     unsigned long long n;
     unsigned long long sum = 0;
-    // unsigned long long (*table)[MAX_LIST] = calloc(1, sizeof(unsigned long long[K][MAX_LIST]));
-    Dictionary* table = calloc(1, sizeof * table);
+    Dictionary tables[K];
 
-    if (!table)
+    for (unsigned int k = 0; k < K; k++)
     {
-        return 1;
+        if (dictionary(tables + k, 0))
+        {
+            return 1;
+        }
     }
 
     while (scanf("%llu", &n) == 1)
     {
-        sum += main_step(table, 0, n);
+        sum += main_step(tables, K, n);
     }
-
-    int totalEntries = 0;
-    int maxChain = 0;
-    int empty = 0;
-    unsigned int maxBucket = 0;
-    unsigned int minBucket = -1;
-    int keys = 0;
 
     for (unsigned int k = 0; k < K; k++)
     {
-        int any = 0;
-        unsigned int entries = 0;
-
-        for (unsigned long long i = 0; i < MAX_LIST; i++)
-        {
-            if (!table->entries[k][i])
-            {
-                empty++;
-
-                continue;
-            }
-
-            any |= 1;
-            
-            int chain = 0;
-
-            for (Entry* p = table->entries[k][i]; p; p = p->nextEntry)
-            {
-                entries++;
-                totalEntries++;
-                chain++;
-            }
-
-            if (chain > maxChain)
-            {
-                maxChain = chain;
-            }
-        }
-
-        if (any)
-        {
-            keys++;
-        }
-
-        if (entries > maxBucket)
-        {
-            maxBucket = entries;
-        }
-
-        if (entries < minBucket)
-        {
-            minBucket = entries;
-        }
+        finalize_dictionary(tables + k);
     }
 
-    printf("primary keys: %d / %d (%lf%%)\n", keys, K, 100 * (double)keys / K);
-    printf("empty buckets: %d / %d (%lf%%)\n", empty, K * MAX_LIST, 100 * (double)empty / (K * MAX_LIST));
-    printf("total entries: %d\n", totalEntries);
-    printf("average chain: %lf\n", (double)totalEntries / (K * MAX_LIST - empty));
-    printf("max chain: %d\n", maxChain);
-    printf("min primary key: %u\n", minBucket);
-    printf("average primary key: %lf\n", (double)totalEntries / keys);
-    printf("max primary key: %u\n", maxBucket);
-    free(table);
     printf("%llu\n", sum);
 
     return 0;
