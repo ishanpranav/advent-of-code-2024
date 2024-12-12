@@ -15,8 +15,6 @@
 #define EQUAL false
 #endif
 
-struct Edge;
-
 typedef struct Edge Edge;
 
 struct Vertex
