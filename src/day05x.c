@@ -1,4 +1,4 @@
-// day05z.c
+// day05x.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 

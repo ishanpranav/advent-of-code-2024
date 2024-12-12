@@ -1,4 +1,4 @@
-// day11a.c
+// day11x.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -7,13 +7,12 @@
 #include <stdio.h>
 #ifndef DAY11
 #define DAY11
-#define MAX_M 64
-#define MAX_N 64
+#define N 25
 #endif
 
 unsigned long main_step(unsigned long n)
 {
-
+    
 }
 
 int main()

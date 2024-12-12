@@ -25,7 +25,8 @@ Let $\ell$ be a list where for $e\in\ell$ we have $e\in\mathbb{N}$.
 
 **Algorithm 3** with arguments $n,k\in\mathbb{N}$:
 
-if $k=0$, then return $0$.
+* if $k=0$, then return $0$;
+* 
 
 **Time complexity:** $O(n)$.
 
