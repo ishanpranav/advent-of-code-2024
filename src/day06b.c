@@ -106,6 +106,17 @@ size_t main_step(Coordinate results[], const Matrix* a, Coordinate s)
     return resultCount;
 }
 
+static void main_read(Coordinate* s, const Matrix* a)
+{
+    char* p = strchr(a->items[a->m], '^');
+
+    if (p)
+    {
+        s->i = a->m;
+        s->j = p - a->items[a->m];
+    }
+}
+
 int main()
 {
     Matrix a;
@@ -124,17 +135,13 @@ int main()
             a.n--;
         }
 
+        main_read(&s, &a);
+
         a.m++;
 
         while (fgets(a.items[a.m], MAX_N, stdin))
         {
-            char* p = strchr(a.items[a.m], '^');
-
-            if (p)
-            {
-                s.i = a.m;
-                s.j = p - a.items[a.m];
-            }
+            main_read(&s, &a);
 
             a.m++;
         }

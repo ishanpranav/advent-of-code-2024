@@ -11,36 +11,60 @@
 #define MAX_M 256
 #define MAX_N 256
 
+struct Matrix
+{
+    size_t m;
+    size_t n;
+    char items[MAX_M][MAX_N];
+};
+
+struct Coordinate
+{
+    size_t i;
+    size_t j;
+};
+
+typedef struct Matrix Matrix;
+typedef struct Coordinate Coordinate;
+
+static void main_read(Coordinate* s, const Matrix* a)
+{
+    char* p = strchr(a->items[a->m], '^');
+
+    if (p)
+    {
+        s->i = a->m;
+        s->j = p - a->items[a->m];
+    }
+}
+
 int main()
 {
-    char a[MAX_M][MAX_N];
-    size_t m = 0;
-    size_t n = 0;
-    size_t i = 0;
-    size_t j = 0;
+    Matrix a;
 
-    if (fgets(a[0], MAX_N, stdin))
+    a.m = 0;
+    a.n = 0;
+
+    Coordinate s = { 0 };
+
+    if (fgets(a.items[0], MAX_N, stdin))
     {
-        n = strlen(a[0]);
+        a.n = strlen(a.items[0]);
 
-        while (n && isspace(a[0][n - 1]))
+        while (a.n && isspace(a.items[0][a.n - 1]))
         {
-            n--;
+            a.n--;
         }
 
-        m++;
+        main_read(&s, &a);
 
-        while (fgets(a[m], MAX_N, stdin))
+        a.m++;
+
+        while (fgets(a.items[a.m], MAX_N, stdin))
         {
-            char* p = strchr(a[m], '^');
+            main_read(&s, &a);
 
-            if (p)
-            {
-                i = m;
-                j = p - a[m];
-            }
-
-            m++;
+            a.m++;
         }
     }
 
@@ -51,18 +75,18 @@ int main()
 
     for (;;)
     {
-        if (!b[i][j])
+        if (!b[s.i][s.j])
         {
             k++;
-            b[i][j] = true;
+            b[s.i][s.j] = true;
         }
 
-        if (i + di >= m || j + dj >= n)
+        if (s.i + di >= a.m || s.j + dj >= a.n)
         {
             break;
         }
 
-        while (a[i + di][j + dj] == '#')
+        while (a.items[s.i + di][s.j + dj] == '#')
         {
             if (di == 1)
             {
@@ -86,8 +110,8 @@ int main()
             }
         }
 
-        i += di;
-        j += dj;
+        s.i += di;
+        s.j += dj;
     }
 
     printf("%zu\n", k);

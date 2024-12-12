@@ -39,9 +39,9 @@ I am working within the following constraints to ensure high code quality.
 * Final solutions must be implemented in the C programming language following the C99 standard, with the following non-standard assumptions:
   * asssume that all characters are ASCII-encoded.
 * Bounds checking is not required for data structures whose capacity is defined by a macro.
-<!-- * Dynamic memory allocation is not permitted unless the following requirements are met:
+* Dynamic memory allocation is not permitted unless the following requirements are met:
   * the total amount of memory consumed exceeds 1 MB; and,
-  * the size of the allocated space is known in advance. -->
+  * the size of the allocated space is known in advance.
 * The return values of all C standard library functions must be checked, except for those returned from the following:
   * `printf`
   * `memcpy`
