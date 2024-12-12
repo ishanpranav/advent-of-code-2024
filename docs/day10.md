@@ -22,3 +22,24 @@ vertices.
 **Time complexity:** $O(\lvert S\rvert\cdot(\lvert V\rvert+\lvert E\rvert))$.
 
 **Space complexity:** $O(\lvert V\rvert)$.
+
+## Part B
+
+**Algorithm:**
+
+* let $x\leftarrow 0$;
+* for $s\in S$:
+  * let $S\leftarrow$ empty stack;
+  * push $s$ onto $S$;
+  * while $S$ is not empty:
+    * let $u\leftarrow$ pop $S$;
+    * if $u\in T$, then:
+      * assign $x\leftarrow x+1$;
+      * continue to next iteration;
+    * for $(u,v)\in E$:
+      * push $v$ onto $S$;
+* return $x$.
+
+**Time complexity:** $O(\lvert S\rvert\cdot(\lvert V\rvert+\lvert E\rvert))$.
+
+**Space complexity:** $O(\lvert V\rvert)$.
