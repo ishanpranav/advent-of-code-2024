@@ -11,6 +11,12 @@ all: day01a day01b day02a day02b day03a day03b day04a day04b day05a day05b \
 	day16a day16b day17a day17b day18a day18b day19a day19b day20a day20b \
 	day21a day21b day22a day22b day23a day23b day24a day24b day25z
 
+day05a: day05x.c
+	$(CC) $(CFLAGS) -DDAY05 -DBUFFER_SIZE=128 -DEQUAL=false -DMAX_VERTICES=128  $< -o $@
+
+day05b: day05x.c
+	$(CC) $(CFLAGS) -DDAY05 -DBUFFER_SIZE=128 -DEQUAL=true -DMAX_VERTICES=128 $< -o $@
+
 day07b: day07b.c
 	$(CC) $(CFLAGS) -lm $< -o $@
 

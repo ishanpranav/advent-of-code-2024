@@ -8,8 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef DAY02
+#define DAY02
 #define BUFFER_SIZE 32
 #define MAX_LENGTH 8
+#endif
 
 struct List
 {

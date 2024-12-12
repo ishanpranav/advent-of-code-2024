@@ -43,6 +43,7 @@ I am working within the following constraints to ensure high code quality.
   * the total amount of memory consumed exceeds 1 MB; and,
   * the size of the allocated space is known in advance.
 * The return values of all C standard library functions must be checked, except for those returned from the following:
-  * `printf`
+  * `fprintf`
   * `memcpy`
   * `memset`
+  * `printf`

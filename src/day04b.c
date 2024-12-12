@@ -8,8 +8,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef DAY04
+#define DAY04
 #define MAX_M 256
 #define MAX_N 256
+#endif
 
 struct Matrix
 {

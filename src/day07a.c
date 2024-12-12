@@ -7,8 +7,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#ifndef DAY07
+#define DAY07
 #define BUFFER_SIZE 64
 #define MAX_N 16
+#endif
 
 static bool main_step(
     long long x, 

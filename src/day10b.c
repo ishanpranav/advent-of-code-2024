@@ -8,8 +8,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef DAY10
+#define DAY10
 #define MAX_M 64
 #define MAX_N 64
+#endif
 
 struct Coordinate
 {

@@ -16,7 +16,7 @@ we have $e\in X$. Let $n^\ast=\max_{(x,\ell)\in L}(\mathrm{len}(\ell))$.
 
 * let $\Sigma\leftarrow 0$;
 * for $(x,\ell)\in L$:
-  * let $p\leftarrow$ invoke Algorithm 2 with arguments $x,y=0,\ell$;
+  * let $p\leftarrow$ invoke Algorithm 2 with arguments $x$ and $y=0$ and $\ell$;
   * if $p$, then assign $\Sigma\leftarrow\Sigma+x$;
 * return $\Sigma$.
   
@@ -39,7 +39,7 @@ we have $e\in X$. Let $n^\ast=\max_{(x,\ell)\in L}(\mathrm{len}(\ell))$.
 
 * let $\Sigma\leftarrow 0$;
 * for $(x,\ell)\in L$:
-  * let $p\leftarrow$ invoke Algorithm 4 with arguments $x,y=0,\ell$;
+  * let $p\leftarrow$ invoke Algorithm 4 with arguments $x$ and $y=0$ and $\ell$;
   * if $p$, then assign $\Sigma\leftarrow\Sigma+x$;
 * return $\Sigma$.
   

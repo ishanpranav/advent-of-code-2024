@@ -1,4 +1,4 @@
-// day05b.c
+// day05z.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -8,8 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_VERTICES 128
+#ifndef DAY05
+#define DAY05
 #define BUFFER_SIZE 128
+#define MAX_VERTICES 128
+#define EQUAL false
+#endif
 
 struct Edge;
 
@@ -229,7 +233,7 @@ int main()
         unsigned int t[MAX_VERTICES];
         unsigned int tLength = graph_sort(t, vertices, vertexCount, &subgraph);
 
-        if (!sequence_equals(vertices, vertexCount, t, tLength))
+        if (sequence_equals(vertices, vertexCount, t, tLength) == EQUAL)
         {
             n += t[tLength / 2];
         }

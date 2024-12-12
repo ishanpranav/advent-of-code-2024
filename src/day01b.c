@@ -5,8 +5,11 @@
 // Historian Hysteria
 
 #include <stdio.h>
+#ifndef DAY01
+#define DAY01
 #define MAX_N 1024
 #define MAX_VALUE 131072
+#endif
 
 int main()
 {

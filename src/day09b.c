@@ -9,7 +9,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef DAY09
+#define DAY09
 #define BUFFER_SIZE 32768
+#endif
 
 struct PriorityQueue
 {

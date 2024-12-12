@@ -6,7 +6,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef DAY01
+#define DAY01
 #define MAX_N 1024
+#endif
 
 static int compare(const void* left, const void* right)
 {

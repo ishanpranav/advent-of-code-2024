@@ -8,7 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef DAY03
+#define DAY03
 #define BUFFER_SIZE 32768
+#endif
 
 int main()
 {
