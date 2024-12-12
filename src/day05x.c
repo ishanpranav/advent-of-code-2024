@@ -114,7 +114,7 @@ static unsigned int graph_sort_component(
 
 static unsigned int graph_sort(
     unsigned int results[MAX_VERTICES],
-    unsigned int vertices[MAX_VERTICES],
+    const unsigned int vertices[MAX_VERTICES],
     unsigned int vertexCount,
     Graph* g)
 {
