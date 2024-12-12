@@ -86,13 +86,6 @@ int main()
             stack_push(&s, i, j);
 
             bool d[MAX_M][MAX_N] = { 0 };
-            Coordinate parent[MAX_M][MAX_N];
-
-            for (size_t ii = 0; ii < m; ii++) {
-                for (size_t jj = 0; jj < n; jj++) {
-                    parent[ii][jj].i = -1;
-                }
-            }
 
             while (s.size)
             {
@@ -101,15 +94,6 @@ int main()
 
                 if (w == '9')
                 {
-                    Coordinate v = parent[u.i][u.j];
-
-                    printf("(%zu, %zu)", u.i, u.j);
-                    while (v.i != (size_t)-1) {
-                        printf(" <- (%zu, %zu)", v.i, v.j);
-                        v = parent[v.i][v.j];
-                    }
-                    printf("\n");
-
                     x++;
                 }
 
@@ -118,7 +102,6 @@ int main()
                     stack_push(&s, u.i - 1, u.j);
 
                     d[u.i - 1][u.j] = true;
-                    parent[u.i - 1][u.j] = u;
                 }
 
                 if (u.i + 1 < m && a[u.i + 1][u.j] - w == 1 && !d[u.i + 1][u.j])
@@ -126,7 +109,6 @@ int main()
                     stack_push(&s, u.i + 1, u.j);
 
                     d[u.i + 1][u.j] = true;
-                    parent[u.i + 1][u.j] = u;
                 }
 
                 if (u.j - 1 < n && a[u.i][u.j - 1] - w == 1 && !d[u.i][u.j - 1])
@@ -134,7 +116,6 @@ int main()
                     stack_push(&s, u.i, u.j - 1);
 
                     d[u.i][u.j - 1] = true;
-                    parent[u.i][u.j - 1] = u;
                 }
 
                 if (u.j + 1 < n && a[u.i][u.j + 1] - w == 1 && !d[u.i][u.j + 1])
@@ -142,7 +123,6 @@ int main()
                     stack_push(&s, u.i, u.j + 1);
 
                     d[u.i][u.j + 1] = true;
-                    parent[u.i][u.j + 1] = u;
                 }
             }
         }
