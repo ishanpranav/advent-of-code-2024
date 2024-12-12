@@ -101,11 +101,10 @@ static int priority_queue_enqueue(PriorityQueue* instance, size_t item)
     return 0;
 }
 
-static size_t priority_queue_dequeue(PriorityQueue* instance)
+static void priority_queue_dequeue(PriorityQueue* instance)
 {
     size_t i = 1;
     size_t child = 2;
-    size_t result = instance->items[0];
 
     instance->items[0] = instance->items[instance->count];
     
@@ -129,8 +128,6 @@ static size_t priority_queue_dequeue(PriorityQueue* instance)
 
     instance->items[i] = instance->items[0];
     instance->count--;
-
-    return result;
 }
 
 static void finalize_priority_queue(PriorityQueue* instance)

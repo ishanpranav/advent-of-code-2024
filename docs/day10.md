@@ -15,7 +15,7 @@ vertices.
 
 * let $x\leftarrow 0$;
 * for $s\in S$:
-  * $F=(V',E')\leftarrow$ depth-first search forest of $G$;
+  * $F=(V',E')\leftarrow$ depth-first search forest of $G$ from $s$;
   * $x\leftarrow x+\lvert V'\cap T\rvert$;
 * return $x$.
 

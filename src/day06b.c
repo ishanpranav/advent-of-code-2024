@@ -11,17 +11,17 @@
 #define MAX_M 256
 #define MAX_N 256
 
+struct Coordinate
+{
+    size_t i;
+    size_t j;
+};
+
 struct Matrix
 {
     char items[MAX_M][MAX_N];
     size_t m;
     size_t n;
-};
-
-struct Coordinate
-{
-    size_t i;
-    size_t j;
 };
 
 enum Hits

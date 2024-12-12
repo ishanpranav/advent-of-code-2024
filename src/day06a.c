@@ -11,6 +11,12 @@
 #define MAX_M 256
 #define MAX_N 256
 
+struct Coordinate
+{
+    size_t i;
+    size_t j;
+};
+
 struct Matrix
 {
     size_t m;
@@ -18,14 +24,8 @@ struct Matrix
     char items[MAX_M][MAX_N];
 };
 
-struct Coordinate
-{
-    size_t i;
-    size_t j;
-};
-
-typedef struct Matrix Matrix;
 typedef struct Coordinate Coordinate;
+typedef struct Matrix Matrix;
 
 static void main_read(Coordinate* s, const Matrix* a)
 {
