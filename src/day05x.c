@@ -83,16 +83,11 @@ static bool sequence_equals(
     return true;
 }
 
-static unsigned int graph_sort_component(
+static unsigned int topological_sort_component(
     unsigned int results[MAX_VERTICES],
     Graph* g,
     unsigned int u)
 {
-    if (g->vertices[u].color)
-    {
-        return 0;
-    }
-
     unsigned int count = 0;
 
     g->vertices[u].color = 1;
@@ -101,7 +96,7 @@ static unsigned int graph_sort_component(
     {
         if (!g->vertices[e->target].color)
         {
-            count += graph_sort_component(results + count, g, e->target);
+            count += topological_sort_component(results + count, g, e->target);
         }
     }
     
@@ -112,7 +107,7 @@ static unsigned int graph_sort_component(
     return count;
 }
 
-static unsigned int graph_sort(
+static unsigned int topological_sort(
     unsigned int results[MAX_VERTICES],
     const unsigned int vertices[MAX_VERTICES],
     unsigned int vertexCount,
@@ -122,7 +117,12 @@ static unsigned int graph_sort(
 
     for (unsigned int i = 0; i < vertexCount; i++)
     {
-        count += graph_sort_component(results + count, g, vertices[i]);
+        unsigned int u = vertices[i];
+
+        if (!g->vertices[u].color)
+        {
+            count += topological_sort_component(results + count, g, u);
+        }
     }
 
     return count;
@@ -184,7 +184,7 @@ int main()
         }
 
         unsigned int t[MAX_VERTICES];
-        unsigned int tLength = graph_sort(t, vertices, vertexCount, &subgraph);
+        unsigned int tLength = topological_sort(t, vertices, vertexCount, &subgraph);
 
         if (sequence_equals(vertices, vertexCount, t, tLength) == EQUAL)
         {
