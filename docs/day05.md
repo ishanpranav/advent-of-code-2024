@@ -18,7 +18,7 @@ subgraphs of $G$ with ordered vertices.
   * $(t_0,\dots,t_{\lvert V'\rvert})\leftarrow$ topological sort of $G'$;
   * for $i\in\lbrace 0,\dots,\lvert V'\rvert\rbrace$:
     * if $V'_i\neq t_i$, then continue to next $G'$;
-  * assign $n\leftarrow n+t_{\frac{\lvert V'\rvert}{2}}$;
+  * assign $n\leftarrow n+t_{\left\lfloor\frac{\lvert V'\rvert}{2}\right\rfloor}$;
 * return $n$.
 
 **Time complexity:** $O(\lvert X\rvert\cdot(\lvert V\rvert+\lvert E\rvert))$.
@@ -34,7 +34,7 @@ subgraphs of $G$ with ordered vertices.
   * $(t_0,\dots,t_{\lvert V'\rvert})\leftarrow$ topological sort of $G'$;
   * for $i\in\lbrace 0,\dots,\lvert V'\rvert\rbrace$:
     * if $V'_i\neq t_i$, then:
-      * assign $n\leftarrow n+t_{\frac{\lvert V'\rvert}{2}}$;
+      * assign $n\leftarrow n+t_{\left\lfloor\frac{\lvert V'\rvert}{2}\right\rfloor}$;
       * continue to next $G'$;
 * return $n$.
 

@@ -14,15 +14,15 @@
 #define MAX_N 16
 #endif
 
-long long concat(long long left, long long right)
+unsigned long long concat(unsigned long long left, unsigned long long right)
 {
-    return left * pow(10, (int)log10(right) + 1) + right;
+    return left * pow(10, (unsigned int)log10(right) + 1) + right;
 }
 
 static bool main_step(
-    long long x, 
-    long long y, 
-    int s[MAX_N], 
+    unsigned long long x, 
+    unsigned long long y, 
+    unsigned int s[MAX_N],
     unsigned int n)
 {
     if (n == 0)
@@ -42,7 +42,7 @@ static bool main_step(
 
 int main()
 {
-    long long sum = 0;
+    unsigned long long sum = 0;
     char buffer[BUFFER_SIZE];
 
     while (fgets(buffer, BUFFER_SIZE, stdin))
@@ -51,17 +51,17 @@ int main()
         int offset;
         long long x;
 
-        if (sscanf(line, "%lld:%n", &x, &offset) != 1)
+        if (sscanf(line, "%llu:%n", &x, &offset) != 1)
         {
             continue;
         }
 
         line += offset;
 
-        int s[MAX_N];
+        unsigned int s[MAX_N];
         unsigned int n = 0;
 
-        while (sscanf(line, "%d%n", s + n, &offset) == 1)
+        while (sscanf(line, "%u%n", s + n, &offset) == 1)
         {
             n++;
             line += offset;
@@ -73,7 +73,7 @@ int main()
         }
     }
 
-    printf("%lld\n", sum);
+    printf("%llu\n", sum);
 
     return 0;
 }

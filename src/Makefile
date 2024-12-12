@@ -21,10 +21,10 @@ day07b: day07b.c
 	$(CC) $(CFLAGS) -lm $< -o $@
 
 day11a: day11x.c
-	$(CC) $(CFLAGS) -DDAY11 -DN=25 $< -o $@
+	$(CC) $(CFLAGS) -DDAY11 -DK=25 -lm $< -o $@
 	
 day11b: day11x.c
-	$(CC) $(CFLAGS) -DDAY11 -DN=75 $< -o $@
+	$(CC) $(CFLAGS) -DDAY11 -DK=75 -lm $< -o $@
 	
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@
