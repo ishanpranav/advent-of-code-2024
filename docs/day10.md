@@ -6,10 +6,10 @@
 
 # Day 10: Hoof It
 
+## Part A
+
 Let $G=(V,E)$ be a directed graph and $S,T\subseteq V$ be subsets of its
 vertices.
-
-## Part A
 
 **Algorithm:**
 
@@ -24,6 +24,8 @@ vertices.
 **Space complexity:** $O(\lvert V\rvert)$.
 
 ## Part B
+
+Let $G=(V,E)$ be a tree and $S,T\subseteq V$ be subsets of its vertices.
 
 **Algorithm:**
 
@@ -40,6 +42,7 @@ vertices.
       * push $v$ onto $S$;
 * return $x$.
 
-**Time complexity:** $O(\lvert S\rvert\cdot(\lvert V\rvert+\lvert E\rvert))$.
+**Time complexity:** $O(\lvert S\rvert\cdot\lvert V\rvert\cdot p)$, where $p$ is
+the average number of paths between source and target vertices.
 
 **Space complexity:** $O(\lvert V\rvert)$.
