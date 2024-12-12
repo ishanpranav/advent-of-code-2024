@@ -1,4 +1,4 @@
-// day10a.c
+// day10b.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -85,8 +85,6 @@ int main()
             stack(&s);
             stack_push(&s, i, j);
 
-            bool d[MAX_M][MAX_N] = { 0 };
-
             while (s.size)
             {
                 Coordinate u = stack_pop(&s);
@@ -99,32 +97,24 @@ int main()
                     continue;
                 }
 
-                if (u.i - 1 < m && a[u.i - 1][u.j] - w == 1 && !d[u.i - 1][u.j])
+                if (u.i - 1 < m && a[u.i - 1][u.j] - w == 1)
                 {
                     stack_push(&s, u.i - 1, u.j);
-
-                    d[u.i - 1][u.j] = true;
                 }
 
-                if (u.i + 1 < m && a[u.i + 1][u.j] - w == 1 && !d[u.i + 1][u.j])
+                if (u.i + 1 < m && a[u.i + 1][u.j] - w == 1)
                 {
                     stack_push(&s, u.i + 1, u.j);
-
-                    d[u.i + 1][u.j] = true;
                 }
 
-                if (u.j - 1 < n && a[u.i][u.j - 1] - w == 1 && !d[u.i][u.j - 1])
+                if (u.j - 1 < n && a[u.i][u.j - 1] - w == 1)
                 {
                     stack_push(&s, u.i, u.j - 1);
-
-                    d[u.i][u.j - 1] = true;
                 }
 
-                if (u.j + 1 < n && a[u.i][u.j + 1] - w == 1 && !d[u.i][u.j + 1])
+                if (u.j + 1 < n && a[u.i][u.j + 1] - w == 1)
                 {
                     stack_push(&s, u.i, u.j + 1);
-
-                    d[u.i][u.j + 1] = true;
                 }
             }
         }
