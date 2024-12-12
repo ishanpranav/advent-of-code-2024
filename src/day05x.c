@@ -41,14 +41,7 @@ struct Graph
     Edge edges[MAX_VERTICES * (MAX_VERTICES - 1)];
 };
 
-struct Stack
-{
-    unsigned int size;
-    unsigned int vertices[MAX_VERTICES];
-};
-
 typedef struct Graph Graph;
-typedef struct Stack Stack;
 
 static void graph(Graph* g)
 {
@@ -66,27 +59,6 @@ static void graph_add_edge(Graph* g, unsigned int u, unsigned int v)
     edge->nextEdge = g->vertices[u].firstEdge;
     g->vertices[u].firstEdge = edge;
     g->edgeCount++;
-}
-
-static void stack(Stack* s)
-{
-    s->size = 0;
-}
-
-static void stack_push(Stack* s, unsigned int v)
-{
-    s->vertices[s->size] = v;
-    s->size++;
-}
-
-static int stack_peek(const Stack* s)
-{
-    return s->vertices[s->size - 1];
-}
-
-static void stack_pop(Stack* s)
-{
-    s->size--;
 }
 
 static bool sequence_equals(
@@ -112,8 +84,8 @@ static bool sequence_equals(
 }
 
 static unsigned int graph_sort_component(
-    unsigned int results[MAX_VERTICES], 
-    Graph* g, 
+    unsigned int results[MAX_VERTICES],
+    Graph* g,
     unsigned int u)
 {
     if (g->vertices[u].color)
@@ -121,40 +93,21 @@ static unsigned int graph_sort_component(
         return 0;
     }
 
-    Stack s;
-
-    stack(&s);
-    stack_push(&s, u);
-
     unsigned int count = 0;
 
-    while (s.size)
+    g->vertices[u].color = 1;
+
+    for (Edge* e = g->vertices[u].firstEdge; e; e = e->nextEdge)
     {
-        unsigned int u = stack_peek(&s);
-
-        switch (g->vertices[u].color)
+        if (!g->vertices[e->target].color)
         {
-        case 0:
-            g->vertices[u].color = 1;
-
-            for (Edge* e = g->vertices[u].firstEdge; e; e = e->nextEdge)
-            {
-                if (!g->vertices[e->target].color)
-                {
-                    stack_push(&s, e->target);
-                }
-            }
-            continue;
-
-        case 1:
-            g->vertices[u].color = 2;
-            results[count] = u;
-            count++;
-            break;
+            count += graph_sort_component(results + count, g, e->target);
         }
-
-        stack_pop(&s);
     }
+    
+    g->vertices[u].color = 2;
+    results[count] = u;
+    count++;
 
     return count;
 }
