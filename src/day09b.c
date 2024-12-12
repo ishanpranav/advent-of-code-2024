@@ -61,9 +61,8 @@ static int priority_queue_ensure_capacity(
         newCapacity = capacity;
     }
 
-    size_t* newItems = realloc(
-        instance->items, 
-        (newCapacity + 1) * sizeof * newItems);
+    size_t* items = instance->items;
+    size_t* newItems = realloc(items, (newCapacity + 1) * sizeof * newItems);
 
     if (!newItems)
     {
@@ -78,9 +77,7 @@ static int priority_queue_ensure_capacity(
 
 static int priority_queue_enqueue(PriorityQueue* instance, size_t item)
 {
-    int ex = priority_queue_ensure_capacity(
-        instance,
-        instance->count + 1);
+    int ex = priority_queue_ensure_capacity(instance, instance->count + 1);
 
     if (ex)
     {
@@ -104,20 +101,11 @@ static int priority_queue_enqueue(PriorityQueue* instance, size_t item)
     return 0;
 }
 
-static bool priority_queue_try_dequeue(PriorityQueue* instance, size_t* item)
+static size_t priority_queue_dequeue(PriorityQueue* instance)
 {
     size_t i = 1;
     size_t child = 2;
-
-    if (!instance->count)
-    {
-        return false;
-    }
-
-    if (item)
-    {
-        *item = instance->items[0];
-    }
+    size_t result = instance->items[0];
 
     instance->items[0] = instance->items[instance->count];
     
@@ -142,7 +130,7 @@ static bool priority_queue_try_dequeue(PriorityQueue* instance, size_t* item)
     instance->items[i] = instance->items[0];
     instance->count--;
 
-    return true;
+    return result;
 }
 
 static void finalize_priority_queue(PriorityQueue* instance)
@@ -167,7 +155,10 @@ int main()
 
     for (unsigned int i = 1; i <= 9; i++)
     {
-        priority_queue(queues + i - 1, 0);
+        if (priority_queue(queues + i - 1, 0))
+        {
+            return EXIT_FAILURE;
+        }
     }
 
     size_t offset = 0;
@@ -187,7 +178,15 @@ int main()
 
         if (size)
         {
-            priority_queue_enqueue(queues + size - 1, offset);
+            PriorityQueue* queue = queues + size - 1;
+
+            if (priority_queue_ensure_capacity(queue, queue->count + 1))
+            {
+                return EXIT_FAILURE;
+            }
+
+            queue->items[queue->count] = offset;
+            queue->count++;
         }
         
         offset += size;
@@ -224,13 +223,16 @@ int main()
 
         if (nextIndex != SIZE_MAX)
         {
-            priority_queue_try_dequeue(queues + nextIndex - 1, NULL);
+            priority_queue_dequeue(queues + nextIndex - 1);
 
             size_t to = nextIndex - size;
         
             if (to)
             {
-                priority_queue_enqueue(queues + to - 1, nextOffset + size);
+                if (priority_queue_enqueue(queues + to - 1, nextOffset + size))
+                {
+                    return EXIT_FAILURE;
+                }
             }
         }
 
@@ -252,5 +254,5 @@ int main()
 
     printf("%zu\n", checksum / 4);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
