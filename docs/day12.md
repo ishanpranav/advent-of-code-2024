@@ -6,18 +6,15 @@
 
 # Day 12: Garden Groups
 
-## Part A
-
 Let $G=(V,E)$ be a directed graph.
+
+## Part A
 
 **Algorithm:**
 
-* let $x\leftarrow 0$;
-* for $s\in S$:
-  * $F=(V',E')\leftarrow$ depth-first search forest of $G$ from $s$;
-  * $x\leftarrow x+\lvert V'\cap T\rvert$;
-* return $x$.
+* let $\mathcal{C}\leftarrow$ connected components of $G$:
+* return $\sum_{X\in\mathcal{C}}\left(\lvert U\rvert\cdot\lvert\lbrace (u,v)\in E\mid v\notin X\rbrace\rvert\right)$.
 
-**Time complexity:** $O(\lvert S\rvert\cdot(\lvert V\rvert+\lvert E\rvert))$.
+**Time complexity:** $O(\lvert V\rvert+\lvert E\rvert)$.
 
 **Space complexity:** $O(\lvert V\rvert)$.

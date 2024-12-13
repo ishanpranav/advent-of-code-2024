@@ -25,6 +25,9 @@ day11a: day11x.c
 	
 day11b: day11x.c
 	$(CC) $(CFLAGS) -DDAY11 -DK=75 -DMAX_LOAD_FACTOR=1.0 -lm $< -o $@
+
+day13a: day13a.c
+	$(CC) $(CFLAGS) -lm $< -o $@
 	
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@
