@@ -8,21 +8,21 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 #ifndef DAY13
 #define DAY13
-#define N 2
-#define BUFFER_SIZE 256
+#define OFFSET 0
+#define BUFFER_SIZE 64
 #endif
+#define N 2
 
 static void swap_row(double a[N][N + 1], unsigned int i, unsigned int j)
 {
     for (unsigned int k = 0; k < N + 1; k++)
     {
-        double x = a[i][k];
+        double v = a[i][k];
 
         a[i][k] = a[j][k];
-        a[j][k] = x;
+        a[j][k] = v;
     }
 }
 
@@ -30,33 +30,33 @@ static unsigned int forward_elimination(double a[N][N + 1])
 {
     for (unsigned int k = 0; k < N; k++)
     {
-        unsigned int i_max = k;
-        double v_max = a[i_max][k];
+        unsigned int iMax = k;
+        double vMax = a[iMax][k];
 
         for (unsigned int i = k + 1; i < N; i++)
         {
-            if (fabs(a[i][k]) > v_max)
+            if (fabs(a[i][k]) > vMax)
             {
-                v_max = a[i][k];
-                i_max = i;
+                iMax = i;
+                vMax = a[i][k];
             }
         }
 
-        if (!a[k][i_max])
+        if (!a[k][iMax])
         {
             return k;
         }
 
-        if (i_max != k)
+        if (iMax != k)
         {
-            swap_row(a, k, i_max);
+            swap_row(a, k, iMax);
         }
 
-        for (int i = k + 1; i < N; i++)
+        for (unsigned int i = k + 1; i < N; i++)
         {
             double f = a[i][k] / a[k][k];
 
-            for (int j = k + 1; j < N + 1; j++)
+            for (unsigned int j = k + 1; j < N + 1; j++)
             {
                 a[i][j] -= a[k][j] * f;
             }
@@ -83,7 +83,7 @@ static void back_substitution(double x[N], double a[N][N + 1])
     }
 }
 
-static bool integer_solution(double x[N], const int a[N][N + 1])
+static bool integer_solution(double x[N], const long long a[N][N + 1])
 {
     for (unsigned int i = 0; i < N; i++)
     {
@@ -92,7 +92,7 @@ static bool integer_solution(double x[N], const int a[N][N + 1])
 
     for (unsigned int i = 0; i < N; i++)
     {
-        int left = 0;
+        long long left = 0;
 
         for (unsigned int j = 0; j < N; j++)
         {
@@ -111,13 +111,13 @@ static bool integer_solution(double x[N], const int a[N][N + 1])
 int main()
 {
     char buffer[BUFFER_SIZE];
-    long result[N] = { 0 };
+    long long result[N] = { 0 };
 
     while (fgets(buffer, BUFFER_SIZE, stdin))
     {
-        int ia[N][N + 1];
+        long long n[N][N + 1];
 
-        if (sscanf(buffer, "Button A: X+%d, Y+%d", ia[0], ia[1]) != 2)
+        if (sscanf(buffer, "Button A: X+%lld, Y+%lld", n[0], n[1]) != 2)
         {
             continue;
         }
@@ -127,7 +127,7 @@ int main()
             break;
         }
 
-        if (sscanf(buffer, "Button B: X+%d, Y+%d", ia[0] + 1, ia[1] + 1) != 2)
+        if (sscanf(buffer, "Button B: X+%lld, Y+%lld", n[0] + 1, n[1] + 1) != 2)
         {
             continue;
         }
@@ -137,7 +137,7 @@ int main()
             break;
         }
 
-        if (sscanf(buffer, "Prize: X=%d, Y=%d", ia[0] + N, ia[1] + N) != 2)
+        if (sscanf(buffer, "Prize: X=%lld, Y=%lld", n[0] + N, n[1] + N) != 2)
         {
             continue;
         }
@@ -146,9 +146,11 @@ int main()
 
         for (unsigned int i = 0; i < N; i++)
         {
+            n[i][N] += OFFSET;
+
             for (unsigned int j = 0; j < N + 1; j++)
             {
-                a[i][j] = ia[i][j];
+                a[i][j] = n[i][j];
             }
         }
 
@@ -161,7 +163,7 @@ int main()
 
         back_substitution(x, a);
 
-        if (!integer_solution(x, ia))
+        if (!integer_solution(x, n))
         {
             continue;
         }
@@ -170,7 +172,7 @@ int main()
         result[1] += x[1];
     }
 
-    printf("%ld\n", 3 * result[0] + result[1]);
+    printf("%lld\n", 3 * result[0] + result[1]);
 
     return 0;
 }
