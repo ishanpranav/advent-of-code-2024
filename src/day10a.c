@@ -40,26 +40,26 @@ static size_t depth_first_search(
 
     if (i - 1 < a->m && !d[i - 1][j] && a->items[i - 1][j] - w == 1)
     {
-        result += depth_first_search(d, a, i - 1, j);
         d[i - 1][j] = true;
+        result += depth_first_search(d, a, i - 1, j);
     }
 
     if (i + 1 < a->m && !d[i + 1][j] && a->items[i + 1][j] - w == 1)
     {
-        result += depth_first_search(d, a, i + 1, j);
         d[i + 1][j] = true;
+        result += depth_first_search(d, a, i + 1, j);
     }
 
     if (j - 1 < a->n && !d[i][j - 1] && a->items[i][j - 1] - w == 1)
     {
-        result += depth_first_search(d, a, i, j - 1);
         d[i][j - 1] = true;
+        result += depth_first_search(d, a, i, j - 1);
     }
 
     if (j + 1 < a->n && !d[i][j + 1] && a->items[i][j + 1] - w == 1)
     {
-        result += depth_first_search(d, a, i, j + 1);
         d[i][j + 1] = true;
+        result += depth_first_search(d, a, i, j + 1);
     }
 
     return result;

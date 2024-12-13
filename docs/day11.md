@@ -37,17 +37,9 @@ Let $\ell$ be a list where for $e\in\ell$ we have $e\in\mathbb{N}$.
 * let $a\leftarrow$ invoke Algorithm 3 with arguments $2024\cdot n$ and $k-1$;
 * return $a$.
 
-**Time complexity:** $O(n)$.
-
-**Space complexity:** $O(n)$.
-
 ## Part B
 
 **Algorithm 3:**
 
 * let $n\leftarrow$ invoke Algorithm 2 with argument $k=75$;
 * return $n$.
-
-**Time complexity:** $O(n)$.
-
-**Space complexity:** $O(n)$.
