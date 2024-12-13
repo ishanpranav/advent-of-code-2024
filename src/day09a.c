@@ -4,6 +4,8 @@
 
 // Disk Fragmenter
 
+// Algorithm: https://github.com/maneatingape/advent-of-code-rust
+
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
