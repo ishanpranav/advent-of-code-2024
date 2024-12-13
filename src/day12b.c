@@ -24,79 +24,90 @@ struct Matrix
 struct Shape
 {
     size_t area;
-    size_t perimeter;
+    size_t edges;
 };
 
 typedef struct Matrix Matrix;
 typedef struct Shape Shape;
 
 static Shape depth_first_search(
-    bool d[MAX_M][MAX_N], 
-    const Matrix* a, 
-    size_t i, 
+    bool d[MAX_M][MAX_N],
+    const Matrix* a,
+    size_t i,
     size_t j)
 {
+    size_t m = a->m;
+    size_t n = a->n;
     char w = a->items[i][j];
+    bool up = i - 1 < m && a->items[i - 1][j] == w;
+    bool upLeft = i - 1 < m && j - 1 < n && a->items[i - 1][ j - 1] == w;
+    bool upRight = i - 1 < m && j + 1 < n && a->items[i - 1][j + 1] == w;
+    bool left = j - 1 < n && a->items[i][j - 1] == w;
+    bool right = j + 1 < n && a->items[i][j + 1] == w;
+    bool down = i + 1 < m && a->items[i + 1][j] == w;
+    bool downLeft = i + 1 < m && j - 1 < n && a->items[i + 1][j - 1] == w;
+    bool downRight = i + 1 < m && j + 1 < n && a->items[i + 1][j + 1] == w;
+
     Shape result = { .area = 1 };
 
-    if (i - 1 >= a->m || a->items[i - 1][j] != w)
+    if ((!up && !right) || (up && right && !upRight))
     {
-        result.perimeter++;
-    }
-    
-    if (i + 1 >= a->m || a->items[i + 1][j] != w)
-    {
-        result.perimeter++;
+        result.edges++;
     }
 
-    if (j - 1 >= a->n || a->items[i][j - 1] != w)
+    if ((!up && !left) || (up && left &&!upLeft))
     {
-        result.perimeter++;
-    }
-    
-    if (j + 1 >= a->n || a->items[i][j + 1] != w)
-    {
-        result.perimeter++;
+        result.edges++;    
     }
 
-    if (i - 1 < a->m && !d[i - 1][j] && a->items[i - 1][j] == w)
+    if ((!down && !right) || (down && right && !downRight))
+    {
+        result.edges++;
+    }
+    
+    if ((!down && !left) || (down && left && !downLeft))
+    {
+        result.edges++;
+    }
+
+    if (up && !d[i - 1][j])
     {
         d[i - 1][j] = true;
-        
+
         Shape shape = depth_first_search(d, a, i - 1, j);
 
         result.area += shape.area;
-        result.perimeter += shape.perimeter;
+        result.edges += shape.edges;
     }
 
-    if (i + 1 < a->m && !d[i + 1][j] && a->items[i + 1][j] == w)
+    if (down && !d[i + 1][j])
     {
         d[i + 1][j] = true;
-        
+
         Shape shape = depth_first_search(d, a, i + 1, j);
 
         result.area += shape.area;
-        result.perimeter += shape.perimeter;
+        result.edges += shape.edges;
     }
-    
-    if (j - 1 < a->n && !d[i][j - 1] && a->items[i][j - 1] == w)
+
+    if (left && !d[i][j - 1])
     {
         d[i][j - 1] = true;
-        
+
         Shape shape = depth_first_search(d, a, i, j - 1);
 
         result.area += shape.area;
-        result.perimeter += shape.perimeter;
+        result.edges += shape.edges;
     }
 
-    if (j + 1 < a->n && !d[i][j + 1] && a->items[i][j + 1] == w)
+    if (right && !d[i][j + 1])
     {
         d[i][j + 1] = true;
-        
+
         Shape shape = depth_first_search(d, a, i, j + 1);
 
         result.area += shape.area;
-        result.perimeter += shape.perimeter;
+        result.edges += shape.edges;
     }
 
     return result;
@@ -125,7 +136,7 @@ int main()
             a.m++;
         }
     }
-    
+
     size_t result = 0;
     bool d[MAX_M][MAX_N] = { 0 };
 
@@ -139,7 +150,7 @@ int main()
 
                 Shape shape = depth_first_search(d, &a, i, j);
 
-                result += shape.area * shape.perimeter;
+                result += shape.area * shape.edges;
             }
         }
     }
