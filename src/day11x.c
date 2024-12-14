@@ -172,13 +172,10 @@ static int dictionary_set(
     unsigned long long value)
 {
     size_t i = key % instance->capacity;
-    size_t chainLength = 0;
     Entry** p;
 
     for (p = instance->entries + i; *p; p = &(*p)->nextEntry)
     {
-        chainLength++;
-
         if ((*p)->key == key)
         {
             (*p)->value = value;

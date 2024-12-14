@@ -1,4 +1,4 @@
-// day13a.c
+// day13x.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 

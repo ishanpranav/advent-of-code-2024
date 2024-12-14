@@ -7,9 +7,8 @@ CFLAGS = -O3 -gdwarf-4 -pedantic -std=c99 -Wall -Wextra
 
 all: day01a day01b day02a day02b day03a day03b day04a day04b day05a day05b \
 	day06a day06b day07a day07b day08a day08b day09a day09b day10a day10b \
-	day11a day11b day12a day12b day13a day13b day14a day14b day15a day15b \
-	day16a day16b day17a day17b day18a day18b day19a day19b day20a day20b \
-	day21a day21b day22a day22b day23a day23b day24a day24b day25z
+	day11a day11b day12a day12b day13a day13b day14a day14b day14s day15a \
+	day15b day16a day16b day17a day17b day18a day18b day19a day19b day20a \ day20b day21a day21b day22a day22b day23a day23b day24a day24b day25z
 
 day05a: day05x.c
 	$(CC) $(CFLAGS) -DDAY05 -DBUFFER_SIZE=128 -DEQUAL=false -DMAX_VERTICES=128  $< -o $@
@@ -31,6 +30,12 @@ day13a: day13x.c
 
 day13b: day13x.c
 	$(CC) $(CFLAGS) -DDAY13 -DBUFFER_SIZE=64 -DOFFSET=10000000000000ll -lm $< -o $@
+
+day14a: day14a.c
+	$(CC) $(CFLAGS) -DDAY14 -DMAX_X=101 -DMAX_Y=103 $< -o $@
+	
+day14s: day14a.c
+	$(CC) $(CFLAGS) -DDAY14 -DMAX_X=11 -DMAX_Y=7 $< -o $@
 
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@
