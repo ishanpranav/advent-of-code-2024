@@ -8,9 +8,11 @@
 
 Let $L$ be a set of pairs $(\vec{s},\vec{v})$ where $\vec{s},\vec{v}$ are
 integer vectors $(x,y)$ for $x,y\in\mathbb{Z}$. Let $x^\ast,y^\ast\in\mathbb{N}$
-be the boundaries and $t$ be the duration. Let $S_0,\dots,S_3$ be sets of vectors.
+be the boundaries and $t$ be the duration.
 
 ## Part A
+
+Let $S_0,\dots,S_3$ be sets of vectors.
 
 **Algorithm:**
 
