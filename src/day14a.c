@@ -41,7 +41,7 @@ int main()
 {
     Vector s;
     Vector v;
-    unsigned int counts[4] = { 0 };
+    unsigned int c[4] = { 0 };
 
     while (scanf("p=%d,%d v=%d,%d ", &s.x, &s.y, &v.x, &v.y) == 4)
     {
@@ -50,27 +50,27 @@ int main()
 
         if (s.x < MAX_X / 2 && s.y < MAX_Y / 2)
         {
-            counts[0]++;
+            c[0]++;
         }
         else if (s.x < MAX_X / 2 && s.y > MAX_Y / 2)
         {
-            counts[1]++;
+            c[1]++;
         }
         else if (s.x > MAX_X / 2 && s.y < MAX_Y / 2)
         {
-            counts[2]++;
+            c[2]++;
         }
         else if (s.x > MAX_X / 2 && s.y > MAX_Y / 2)
         {
-            counts[3]++;
+            c[3]++;
         }
     }
 
-    unsigned long product = counts[0];
+    unsigned long product = c[0];
 
     for (unsigned int i = 1; i < 4; i++)
     {
-        product *= counts[i];
+        product *= c[i];
     }
 
     printf("%lu\n", product);
