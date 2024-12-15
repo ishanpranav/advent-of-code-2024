@@ -17,6 +17,11 @@ for each solution.
 exceeding $O(1)$. The algorithm with $O(1)$ space complexity comes from the
 impressive work at [maneatingape/advent-of-code-rust](https://github.com/maneatingape/advent-of-code-rust).
 
+## Omissions
+
+**Day 14(b):** By design, there is no generalized heuristic-free algorithm for
+Day 14(b).
+
 ## Usage
 
 These programs are cross-platform, having been tested on Windows and Linux

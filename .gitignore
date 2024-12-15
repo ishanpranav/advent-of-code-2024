@@ -62,3 +62,7 @@ src/day*
 
 # Visual Studio Code
 .vscode/
+
+# Perf
+perf.data
+perf.data.old

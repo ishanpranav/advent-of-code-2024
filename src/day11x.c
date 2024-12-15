@@ -4,37 +4,46 @@
 
 // Plutonian Pebbles
 
+#include <assert.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #ifndef DAY11
 #define DAY11
 #define K 25
+#define K_PRIME 101
+#define MIN_CAPACITY 0
+#define MIN_BUCKET_COUNT 0
 #define MAX_LOAD_FACTOR 1.0
 #endif
 #define HASH_PRIMES_COUNT 26
+#define hash(k, n) (n * K_PRIME + k)
 
 typedef struct Entry Entry;
 
 struct Entry
 {
-    unsigned long long key;
+    unsigned int k;
+    unsigned long long n;
     unsigned long long value;
-    Entry* nextEntry;
+    size_t nextEntry;
 };
 
 struct Dictionary
 {
-    Entry** entries;
+    Entry* entries;
+    size_t* buckets;
     size_t count;
     size_t capacity;
+    size_t bucketCount;
 };
 
 typedef struct Dictionary Dictionary;
 
 /** See https://planetmath.org/goodhashtableprimes. */
-static const size_t HASH_PRIMES[HASH_PRIMES_COUNT] = 
+static const size_t HASH_PRIMES[HASH_PRIMES_COUNT] =
 {
     53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157l, 98317l,
     196613l, 393241l, 786433l, 1572869l, 3145739l, 6291469l, 12582917l,
@@ -73,22 +82,12 @@ static size_t binary_search_min(size_t min, const size_t* items, size_t length)
     return items[right];
 }
 
-static size_t dictionary_min_capacity(size_t capacity)
+static size_t dictionary_next_prime(size_t count, size_t capacity)
 {
-    if (capacity < HASH_PRIMES[0])
-    {
-        return HASH_PRIMES[0];
-    }
-
-    return capacity;
-}
-
-static size_t dictionary_new_capacity(size_t count, size_t capacity)
-{
-    capacity *= 1.5;
+    capacity *= 2;
 
     size_t prime = binary_search_min(capacity, HASH_PRIMES, HASH_PRIMES_COUNT);
-    
+
     if (prime > capacity)
     {
         capacity = prime;
@@ -102,13 +101,33 @@ static size_t dictionary_new_capacity(size_t count, size_t capacity)
     return capacity;
 }
 
-static int dictionary(Dictionary* instance, size_t capacity)
+static int dictionary(Dictionary* instance, size_t capacity, size_t bucketCount)
 {
-    instance->capacity = dictionary_min_capacity(capacity);
-    instance->entries = calloc(instance->capacity, sizeof * instance->entries);
+    if (capacity < 4)
+    {
+        capacity = 4;
+    }
+
+    instance->capacity = capacity;
+    instance->entries = malloc(capacity * sizeof * instance->entries);
 
     if (!instance->entries)
     {
+        return -1;
+    }
+
+    if (bucketCount < HASH_PRIMES[0])
+    {
+        bucketCount = HASH_PRIMES[0];
+    }
+
+    instance->bucketCount = bucketCount;
+    instance->buckets = calloc(bucketCount, sizeof * instance->buckets);
+
+    if (!instance->buckets)
+    {
+        free(instance->entries);
+
         return -1;
     }
 
@@ -119,15 +138,18 @@ static int dictionary(Dictionary* instance, size_t capacity)
 
 static unsigned long long dictionary_get(
     const Dictionary* instance,
-    unsigned long long key)
+    unsigned int k,
+    unsigned long long n)
 {
-    size_t i = key % instance->capacity;
+    size_t i = hash(k, n) % instance->bucketCount;
+    const size_t* buckets = instance->buckets;
+    const Entry* entries = instance->entries;
 
-    for (Entry* entry = instance->entries[i]; entry; entry = entry->nextEntry)
+    for (size_t p = buckets[i]; p; p = entries[p].nextEntry)
     {
-        if (entry->key == key)
+        if (entries[p].k == k && entries[p].n == n)
         {
-            return entry->value;
+            return entries[p].value;
         }
     }
 
@@ -136,22 +158,6 @@ static unsigned long long dictionary_get(
 
 static void dictionary_clear(Dictionary* instance)
 {
-    for (size_t i = 0; i < instance->capacity; i++)
-    {
-        Entry* current = instance->entries[i];
-
-        while (current)
-        {
-            Entry* next = current->nextEntry;
-
-            free(current);
-
-            current = next;
-        }
-
-        instance->entries[i] = NULL;
-    }
-
     instance->count = 0;
 }
 
@@ -159,92 +165,122 @@ static void finalize_dictionary(Dictionary* instance)
 {
     dictionary_clear(instance);
     free(instance->entries);
+    free(instance->buckets);
 
     instance->entries = NULL;
     instance->capacity = 0;
+    instance->buckets = NULL;
+    instance->bucketCount = 0;
 }
 
-static int dictionary_copy(Dictionary* result, const Dictionary* instance);
-
-static int dictionary_set(
-    Dictionary* instance, 
-    unsigned long long key, 
-    unsigned long long value)
+static int dictionary_ensure_capacity(Dictionary* instance, size_t capacity)
 {
-    size_t i = key % instance->capacity;
-    Entry** p;
-
-    for (p = instance->entries + i; *p; p = &(*p)->nextEntry)
+    if (instance->capacity >= capacity)
     {
-        if ((*p)->key == key)
-        {
-            (*p)->value = value;
-
-            return 0;
-        }
+        return 0;
     }
 
-    Entry* entry = malloc(sizeof * entry);
+    size_t newCapacity = instance->capacity * 2;
 
-    if (!entry)
+    if (capacity > newCapacity)
+    {
+        newCapacity = capacity;
+    }
+
+    Entry* entries = instance->entries;
+    Entry* newEntries = realloc(entries, newCapacity * sizeof * newEntries);
+
+    if (!newEntries)
     {
         return -1;
     }
 
-    entry->key = key;
-    entry->value = value;
-    entry->nextEntry = NULL;
-    *p = entry;
-    instance->count++;
+    instance->capacity = newCapacity;
+    instance->entries = newEntries;
 
-    if ((double)instance->count / instance->capacity > MAX_LOAD_FACTOR)
+    return 0;
+}
+
+static int dictionary_rehash(Dictionary* instance)
+{
+    size_t bucketCount = instance->bucketCount;
+    size_t newBucketCount = dictionary_next_prime(instance->count, bucketCount);
+    size_t* buckets = instance->buckets;
+    size_t* newBuckets = realloc(buckets, newBucketCount * sizeof * buckets);
+
+    if (!newBuckets)
     {
-        Dictionary clone;
+        return -1;
+    }
 
-        if (dictionary_copy(&clone, instance))
-        {
-            return 0;
-        }
+    memset(newBuckets, 0, newBucketCount * sizeof * newBuckets);
 
-        finalize_dictionary(instance);
-        
-        *instance = clone;
+    instance->bucketCount = newBucketCount;
+    instance->buckets = newBuckets;
+
+    Entry* entries = instance->entries;
+
+    for (size_t p = 1; p <= instance->count; p++)
+    {
+        size_t i = hash(entries[p].k, entries[p].n) % newBucketCount;
+
+        entries[p].nextEntry = newBuckets[i];
+        newBuckets[i] = p;
     }
 
     return 0;
 }
 
-static int dictionary_copy(Dictionary* result, const Dictionary* instance)
+static int dictionary_set(
+    Dictionary* instance,
+    unsigned int k,
+    unsigned long long n,
+    unsigned long long value)
 {
-    size_t capacity = instance->capacity;
-    size_t newCapacity = dictionary_new_capacity(instance->count, capacity);
-    int ex = dictionary(result, newCapacity);
+    if ((double)instance->count / instance->bucketCount > MAX_LOAD_FACTOR)
+    {
+        int ex = dictionary_rehash(instance);
+
+        if (ex)
+        {
+            return ex;
+        }
+    }
+
+    size_t i = hash(k, n) % instance->bucketCount;
+    Entry* entries = instance->entries;
+
+    for (size_t p = instance->buckets[i]; p; p = entries[p].nextEntry)
+    {
+        if (entries[p].k == k && entries[p].n == n)
+        {
+            entries[p].value = value;
+
+            return 0;
+        }
+    }
+
+    int ex = dictionary_ensure_capacity(instance, instance->count + 2);
 
     if (ex)
     {
         return ex;
     }
 
-    for (size_t i = 0; i < capacity; i++)
-    {
-        for (Entry* p = instance->entries[i]; p; p = p->nextEntry)
-        {
-            ex = dictionary_set(result, p->key, p->value);
+    Entry* entry = instance->entries + instance->count + 1;
 
-            if (ex)
-            {
-                finalize_dictionary(result);
-
-                return ex;
-            }
-        }
-    }
+    entry->k = k;
+    entry->n = n;
+    entry->value = value;
+    entry->nextEntry = instance->buckets[i];
+    instance->buckets[i] = instance->count + 1;
+    instance->count++;
 
     return 0;
 }
 
 static unsigned long long main_step(
-    Dictionary tables[K],
+    Dictionary* table,
     unsigned int k,
     unsigned long long n)
 {
@@ -255,10 +291,10 @@ static unsigned long long main_step(
 
     if (n == 0)
     {
-        return main_step(tables, k - 1, 1);
+        return main_step(table, k - 1, 1);
     }
 
-    unsigned long long result = dictionary_get(tables + k - 1, n);
+    unsigned long long result = dictionary_get(table, k - 1, n);
 
     if (result)
     {
@@ -270,17 +306,23 @@ static unsigned long long main_step(
     if (d % 2 == 0)
     {
         unsigned long mask = pow(10, d / 2);
-        unsigned long a = main_step(tables, k - 1, n % mask);
-        unsigned long b = main_step(tables, k - 1, n / mask);
+        unsigned long a = main_step(table, k - 1, n % mask);
+        unsigned long b = main_step(table, k - 1, n / mask);
 
-        dictionary_set(tables + k - 1, n, a + b);
+        if (dictionary_set(table, k - 1, n, a + b))
+        {
+            exit(EXIT_FAILURE);
+        }
 
         return a + b;
     }
 
-    unsigned long a = main_step(tables, k - 1, 2024 * n);
+    unsigned long a = main_step(table, k - 1, 2024 * n);
 
-    dictionary_set(tables + k - 1, n, a);
+    if (dictionary_set(table, k - 1, n, a))
+    {
+        exit(EXIT_FAILURE);
+    }
 
     return a;
 }
@@ -289,27 +331,20 @@ int main()
 {
     unsigned long long n;
     unsigned long long sum = 0;
-    Dictionary tables[K];
+    Dictionary table;
 
-    for (unsigned int k = 0; k < K; k++)
+    if (dictionary(&table, MIN_CAPACITY, MIN_BUCKET_COUNT))
     {
-        if (dictionary(tables + k, 0))
-        {
-            return 1;
-        }
+        return EXIT_FAILURE;
     }
 
     while (scanf("%llu", &n) == 1)
     {
-        sum += main_step(tables, K, n);
-    }
-
-    for (unsigned int k = 0; k < K; k++)
-    {
-        finalize_dictionary(tables + k);
+        sum += main_step(&table, K, n);
     }
 
     printf("%llu\n", sum);
+    finalize_dictionary(&table);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
