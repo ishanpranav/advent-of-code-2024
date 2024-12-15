@@ -20,8 +20,6 @@
 #define HASH_PRIMES_COUNT 26
 #define hash(k, n) (n * K_PRIME + k)
 
-typedef struct Entry Entry;
-
 struct Entry
 {
     unsigned int k;
@@ -29,6 +27,8 @@ struct Entry
     unsigned long long value;
     size_t nextEntry;
 };
+
+typedef struct Entry Entry;
 
 struct Dictionary
 {

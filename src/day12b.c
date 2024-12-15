@@ -16,9 +16,9 @@
 
 struct Matrix
 {
+    char items[MAX_M][MAX_N];
     size_t m;
     size_t n;
-    char items[MAX_M][MAX_N];
 };
 
 struct Shape
