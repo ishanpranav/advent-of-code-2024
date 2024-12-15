@@ -44,28 +44,6 @@ static void main_read(Matrix* a)
     }
 }
 
-static void print_matrix(const Matrix* a)
-{
-    // for (size_t i = 0; i < a->m; i++)
-    // {
-    //     for (size_t j = 0; j < a->n; j++)
-    //     {
-    //         if (a->s.i == i && a->s.j == j)
-    //         {
-    //             printf("@");
-    //         }
-    //         else
-    //         {
-    //             printf("%c", a->items[i][j]);
-    //         }
-    //     }
-
-    //     printf("\n");
-    // }
-
-    // printf("\n");
-}
-
 static void main_move(Matrix* a, int di, int dj)
 {
     switch (a->items[a->s.i + di][a->s.j + dj])
@@ -90,16 +68,13 @@ static void main_move(Matrix* a, int di, int dj)
 
         if (a->items[t.i + di][t.j + dj] != '.')
         {
-            // printf("t.i = %zu, t.j = %zu; failed\n", t.i, t.j);
             return;
         }
 
         a->items[t.i + di][t.j + dj] = 'O';
-        // printf("assgin %zu, %zu to 'O'\n", t.i + di, t.j + dj);
         a->s.i += di;
         a->s.j += dj;
         a->items[a->s.i][a->s.j] = '.';
-        // printf("assgin %zu, %zu to '.'\n", a->s.i, a->s.j);
     }
     break;
     }
@@ -107,13 +82,6 @@ static void main_move(Matrix* a, int di, int dj)
 
 static void main_step(Matrix* a, char opcode)
 {
-    if (isspace(opcode))
-    {
-        return;
-    }
-
-    // printf("Move %c:\n", opcode);
-
     switch (opcode)
     {
     case '^':
@@ -132,8 +100,6 @@ static void main_step(Matrix* a, char opcode)
         main_move(a, 0, 1);
         break;
     }
-
-    print_matrix(a);
 }
 
 int main()
@@ -168,9 +134,6 @@ int main()
             a.m++;
         }
     }
-
-    // printf("Initial state:\n");
-    print_matrix(&a);
 
     char buffer[BUFFER_SIZE];
 
