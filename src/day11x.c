@@ -4,7 +4,6 @@
 
 // Plutonian Pebbles
 
-#include <assert.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -329,14 +328,15 @@ static unsigned long long main_step(
 
 int main()
 {
-    unsigned long long n;
-    unsigned long long sum = 0;
     Dictionary table;
 
     if (dictionary(&table, MIN_CAPACITY, MIN_BUCKET_COUNT))
     {
         return EXIT_FAILURE;
     }
+
+    unsigned long long n;
+    unsigned long long sum = 0;
 
     while (scanf("%llu", &n) == 1)
     {
