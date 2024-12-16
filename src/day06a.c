@@ -14,82 +14,63 @@
 #define MAX_N 256
 #endif
 
-struct Coordinate
-{
-    size_t i;
-    size_t j;
-};
-
-struct Matrix
-{
-    char items[MAX_M][MAX_N];
-    size_t m;
-    size_t n;
-};
-
-typedef struct Coordinate Coordinate;
-typedef struct Matrix Matrix;
-
-static void main_read(Coordinate* s, const Matrix* a)
-{
-    char* p = strchr(a->items[a->m], '^');
-
-    if (p)
-    {
-        s->i = a->m;
-        s->j = p - a->items[a->m];
-    }
-}
-
 int main()
 {
-    Matrix a;
+    char a[MAX_M][MAX_N];
+    size_t m = 0;
+    size_t n = 0;
 
-    a.m = 0;
-    a.n = 0;
-
-    Coordinate s = { 0 };
-
-    if (fgets(a.items[0], MAX_N, stdin))
+    if (fgets(a[0], MAX_N, stdin))
     {
-        a.n = strlen(a.items[0]);
+        n = strlen(a[0]);
 
-        while (a.n && isspace(a.items[0][a.n - 1]))
+        while (n && isspace(a[0][n - 1]))
         {
-            a.n--;
+            n--;
         }
 
-        main_read(&s, &a);
+        m++;
 
-        a.m++;
-
-        while (fgets(a.items[a.m], MAX_N, stdin))
+        while (fgets(a[m], MAX_N, stdin))
         {
-            main_read(&s, &a);
-
-            a.m++;
+            m++;
         }
     }
 
+    bool b[MAX_M][MAX_N] = { 0 };
+    size_t i;
+    size_t j = 0;
+
+    for (i = 0; i < m; i++)
+    {
+        char* p = strchr(a[i], '^');
+
+        if (p)
+        {
+            j = p - a[i];
+
+            break;
+        }
+    }
+
+    size_t k = 0;
     int di = -1;
     int dj = 0;
-    size_t k = 0;
-    bool b[MAX_M][MAX_N] = { 0 };
 
     for (;;)
     {
-        if (!b[s.i][s.j])
+        if (!b[i][j])
         {
             k++;
-            b[s.i][s.j] = true;
+            b[i][j] = true;
         }
 
-        if (s.i + di >= a.m || s.j + dj >= a.n)
+        if (i + di >= m || j + dj >= n)
         {
             break;
         }
 
-        while (a.items[s.i + di][s.j + dj] == '#')
+        while (a[i + di][j + dj] == '#')
         {
             if (di == 1)
             {
@@ -113,8 +94,8 @@ int main()
             }
         }
 
-        s.i += di;
-        s.j += dj;
+        i += di;
+        j += dj;
     }
 
     printf("%zu\n", k);

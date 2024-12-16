@@ -22,29 +22,15 @@ struct Coordinate
 
 typedef struct Coordinate Coordinate;
 
-struct Matrix
+struct Grid
 {
     char items[MAX_M][MAX_N];
-    size_t m;
-    size_t n;
     Coordinate s;
 };
 
-typedef struct Matrix Matrix;
+typedef struct Grid Grid;
 
-static void main_read(Matrix* a)
-{
-    char* p = strchr(a->items[a->m], '@');
-
-    if (p)
-    {
-        a->s.i = a->m;
-        a->s.j = p - a->items[a->m];
-        *p = '.';
-    }
-}
-
-static void main_move(Matrix* a, int di, int dj)
+static void main_move(Grid* a, int di, int dj)
 {
     switch (a->items[a->s.i + di][a->s.j + dj])
     {
@@ -80,7 +66,7 @@ static void main_move(Matrix* a, int di, int dj)
     }
 }
 
-static void main_step(Matrix* a, char opcode)
+static void main_step(Grid* a, char opcode)
 {
     switch (opcode)
     {
@@ -104,34 +90,43 @@ static void main_step(Matrix* a, char opcode)
 
 int main()
 {
-    Matrix a;
-
-    a.m = 0;
-    a.n = 0;
+    Grid a;
+    size_t m = 0;
+    size_t n = 0;
 
     if (fgets(a.items[0], MAX_N, stdin))
     {
-        a.n = strlen(a.items[0]);
+        n = strlen(a.items[0]);
 
-        while (a.n && isspace(a.items[0][a.n - 1]))
+        while (n && isspace(a.items[0][n - 1]))
         {
-            a.n--;
+            n--;
         }
 
-        main_read(&a);
+        m++;
 
-        a.m++;
-
-        while (fgets(a.items[a.m], MAX_N, stdin))
+        while (fgets(a.items[m], MAX_N, stdin))
         {
-            if (isspace(*a.items[a.m]))
+            if (isspace(*a.items[m]))
             {
                 break;
             }
 
-            main_read(&a);
+            m++;
+        }
+    }
 
-            a.m++;
+    for (size_t i = 0; i < m; i++)
+    {
+        char* p = strchr(a.items[i], '@');
+
+        if (p)
+        {
+            *p = '.';
+            a.s.i = i;
+            a.s.j = p - a.items[i];
+
+            break;
         }
     }
 
@@ -147,9 +142,9 @@ int main()
 
     size_t sum = 0;
 
-    for (size_t i = 0; i < a.m; i++)
+    for (size_t i = 0; i < m; i++)
     {
-        for (size_t j = 0; j < a.n; j++)
+        for (size_t j = 0; j < n; j++)
         {
             if (a.items[i][j] == 'O')
             {

@@ -24,17 +24,15 @@ struct Coordinate
 
 typedef struct Coordinate Coordinate;
 
-struct Matrix
+struct Grid
 {
     char items[MAX_M][MAX_N];
-    size_t m;
-    size_t n;
     Coordinate s;
 };
 
-typedef struct Matrix Matrix;
+typedef struct Grid Grid;
 
-static void main_update(Matrix* a, size_t i, size_t j, int di)
+static void main_update(Grid* a, size_t i, size_t j, int di)
 {
     if (a->items[i][j] == ']')
     {
@@ -62,7 +60,7 @@ static void main_update(Matrix* a, size_t i, size_t j, int di)
     a->items[i + di][j + 1] = ']';
 }
 
-static bool main_test(const Matrix* a, size_t i, size_t j, int di)
+static bool main_test(const Grid* a, size_t i, size_t j, int di)
 {
     if (a->items[i][j] == ']')
     {
@@ -102,19 +100,7 @@ static bool main_test(const Matrix* a, size_t i, size_t j, int di)
         main_test(a, i + di, j - 1, di);
 }
 
-static void main_read(Matrix* a)
-{
-    char* p = strchr(a->items[a->m], '@');
-
-    if (p)
-    {
-        a->s.i = a->m;
-        a->s.j = p - a->items[a->m];
-        *p = '.';
-    }
-}
-
-static void main_move_row(Matrix* a, int di)
+static void main_move_row(Grid* a, int di)
 {
     switch (a->items[a->s.i + di][a->s.j])
     {
@@ -136,7 +122,7 @@ static void main_move_row(Matrix* a, int di)
     }
 }
 
-static void main_move_column(Matrix* a, int dj)
+static void main_move_column(Grid* a, int dj)
 {
     switch (a->items[a->s.i][a->s.j + dj])
     {
@@ -177,7 +163,7 @@ static void main_move_column(Matrix* a, int dj)
     }
 }
 
-static void main_step(Matrix* a, char opcode)
+static void main_step(Grid* a, char opcode)
 {
     switch (opcode)
     {
@@ -201,42 +187,51 @@ static void main_step(Matrix* a, char opcode)
 
 int main()
 {
-    Matrix a;
+    Grid a;
+    size_t m = 0;
+    size_t n = 0;
 
-    a.m = 0;
-    a.n = 0;
-
-    if (fgets(a.items[0], MAX_N / 2, stdin))
+    if (fgets(a.items[0], MAX_N, stdin))
     {
-        a.n = strlen(a.items[0]);
+        n = strlen(a.items[0]);
 
-        while (a.n && isspace(a.items[0][a.n - 1]))
+        while (n && isspace(a.items[0][n - 1]))
         {
-            a.n--;
+            n--;
         }
 
-        main_read(&a);
+        m++;
 
-        a.m++;
-
-        while (fgets(a.items[a.m], MAX_N / 2, stdin))
+        while (fgets(a.items[m], MAX_N, stdin))
         {
-            if (isspace(*a.items[a.m]))
+            if (isspace(*a.items[m]))
             {
                 break;
             }
 
-            main_read(&a);
+            m++;
+        }
+    }
 
-            a.m++;
+    for (size_t i = 0; i < m; i++)
+    {
+        char* p = strchr(a.items[i], '@');
+
+        if (p)
+        {
+            *p = '.';
+            a.s.i = i;
+            a.s.j = p - a.items[i];
+
+            break;
         }
     }
 
     a.s.j *= 2;
 
-    for (size_t i = 0; i < a.m; i++)
+    for (size_t i = 0; i < m; i++)
     {
-        for (size_t j = a.n - 1; j != SIZE_MAX; j--)
+        for (size_t j = n - 1; j != SIZE_MAX; j--)
         {
             if (a.items[i][j] == 'O')
             {
@@ -251,7 +246,7 @@ int main()
         }
     }
 
-    a.n *= 2;
+    n *= 2;
 
     char buffer[BUFFER_SIZE];
 
@@ -265,9 +260,9 @@ int main()
 
     size_t sum = 0;
 
-    for (size_t i = 0; i < a.m; i++)
+    for (size_t i = 0; i < m; i++)
     {
-        for (size_t j = 0; j < a.n; j++)
+        for (size_t j = 0; j < n; j++)
         {
             if (a.items[i][j] == '[')
             {

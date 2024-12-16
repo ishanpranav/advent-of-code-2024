@@ -15,6 +15,6 @@ Let $G=(V,E)$ be a directed graph.
 * let $\mathcal{C}\leftarrow$ connected components of $G$:
 * return $\sum_{X\in\mathcal{C}}\left(\lvert U\rvert\cdot\lvert\lbrace (u,v)\in E\mid v\notin X\rbrace\rvert\right)$.
 
-**Time complexity:** $O(\lvert V\rvert+\lvert E\rvert)$.
+**Time complexity:** $O(\lvert V\rvert+\lvert E\rvert)=O(\lvert V\rvert)$ for $\lvert E\rvert=O(\lvert V\rvert)$.
 
 **Space complexity:** $O(\lvert V\rvert)$.
