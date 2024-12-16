@@ -133,9 +133,9 @@ int main()
         }
     }
 
-    Coordinate s;
+    Coordinate s = { 0 };
 
-    for (s.i = 0; s.i < a.m; s.i++)
+    for (; s.i < a.m; s.i++)
     {
         char* p = strchr(a.items[s.i], '^');
 

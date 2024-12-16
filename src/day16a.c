@@ -26,28 +26,27 @@ typedef struct Coordinate Coordinate;
 struct Grid
 {
     char items[MAX_M][MAX_N];
-    Coordinate s;
-    Coordinate t;
 };
 
 typedef struct Grid Grid;
 
-static void main_read(Grid* a, size_t i, size_t j)
+static Coordinate main_find(const Grid* a, size_t m, char value)
 {
-    char* p = strchr(a->items[i], 'S');
-    char* q = strchr(a->items[i], 'E');
+    Coordinate u = { 0 };
 
-    if (p)
+    for (; u.i < m; u.i++)
     {
-        a->s.i = i;
-        a->s.j = p - a->items[i];
+        char* p = strchr(a->items[u.i], value);
+
+        if (p)
+        {
+            u.j = p - a->items[u.i];
+
+            return u;
+        }
     }
 
-    if (q)
-    {
-        a->t.i = i;
-        a->t.j = q - a->items[i];
-    }
+    return u;
 }
 
 int main()
@@ -78,8 +77,10 @@ int main()
         }
     }
 
+    Coordinate s = main_find(&a, m, 'S');
+    Coordinate t = main_find(&a, m, 'E');
 
-    printf("%d\n", 0);
+    printf("%d s = (%zu, %zu), t = (%zu, %zu)\n", 0, s.i, s.j, t.i, t.j);
 
     return 0;
 }
