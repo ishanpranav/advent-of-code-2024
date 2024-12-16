@@ -47,5 +47,6 @@ I am working within the following constraints to ensure high code quality.
 * The return values of all C standard library functions must be checked, except for those returned from the following:
   * `fprintf`
   * `memcpy`
+  * `memmove`
   * `memset`
   * `printf`

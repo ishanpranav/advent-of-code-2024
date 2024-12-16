@@ -41,22 +41,25 @@ struct Graph
 
 typedef struct Graph Graph;
 
-static void graph(Graph* g)
+static void graph(Graph* graph)
 {
-    g->edgeCount = 0;
+    graph->edgeCount = 0;
 
-    memset(g->vertices, 0, sizeof g->vertices);
+    memset(graph->vertices, 0, sizeof graph->vertices);
 }
 
-static void graph_add_edge(Graph* g, unsigned int u, unsigned int v)
+static void graph_add_edge(
+    Graph* instance,
+    unsigned int source,
+    unsigned int target)
 {
-    Edge* edge = g->edges + g->edgeCount;
+    Edge* edge = instance->edges + instance->edgeCount;
 
-    edge->source = u;
-    edge->target = v;
-    edge->nextEdge = g->vertices[u].firstEdge;
-    g->vertices[u].firstEdge = edge;
-    g->edgeCount++;
+    edge->source = source;
+    edge->target = target;
+    edge->nextEdge = instance->vertices[source].firstEdge;
+    instance->vertices[source].firstEdge = edge;
+    instance->edgeCount++;
 }
 
 static bool sequence_equals(
@@ -97,7 +100,7 @@ static unsigned int topological_sort_component(
             count += topological_sort_component(results + count, g, e->target);
         }
     }
-    
+
     g->vertices[u].color = 2;
     results[count] = u;
     count++;

@@ -5,6 +5,7 @@
 // Warehouse Woes
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -33,6 +34,74 @@ struct Matrix
 
 typedef struct Matrix Matrix;
 
+static void main_update(Matrix* a, size_t i, size_t j, int di)
+{
+    if (a->items[i][j] == ']')
+    {
+        j--;
+    }
+
+    if (a->items[i + di][j] == '[' && a->items[i + di][j + 1] == ']')
+    {
+        main_update(a, i + di, j, di);
+    }
+
+    if (a->items[i + di][j] == ']')
+    {
+        main_update(a, i + di, j - 1, di);
+    }
+
+    if (a->items[i + di][j + 1] == '[')
+    {
+        main_update(a, i + di, j + 1, di);
+    }
+
+    a->items[i][j] = '.';
+    a->items[i][j + 1] = '.';
+    a->items[i + di][j] = '[';
+    a->items[i + di][j + 1] = ']';
+}
+
+static bool main_test(const Matrix* a, size_t i, size_t j, int di)
+{
+    if (a->items[i][j] == ']')
+    {
+        j--;
+    }
+
+    char left = a->items[i + di][j];
+    char right = a->items[i + di][j + 1];
+
+    if (left == '#' || right == '#')
+    {
+        return false;
+    }
+
+    if (left == '.' && right == '.')
+    {
+        return true;
+    }
+
+    if (left == '[' && main_test(a, i + di, j, di))
+    {
+        return true;
+    }
+
+    if (left == '.' && right == '[' && main_test(a, i + di, j + 1, di))
+    {
+        return true;
+    }
+
+    if (left == ']' && right == '.' && main_test(a, i + di, j - 1, di))
+    {
+        return true;
+    }
+
+    return left == ']' && right == '[' &&
+        main_test(a, i + di, j + 1, di) &&
+        main_test(a, i + di, j - 1, di);
+}
+
 static void main_read(Matrix* a)
 {
     char* p = strchr(a->items[a->m], '@');
@@ -43,28 +112,6 @@ static void main_read(Matrix* a)
         a->s.j = p - a->items[a->m];
         *p = '.';
     }
-}
-
-static void print_matrix(const Matrix* a)
-{
-    for (size_t i = 0; i < a->m; i++)
-    {
-        for (size_t j = 0; j < a->n; j++)
-        {
-            if (a->s.i == i && a->s.j == j)
-            {
-                printf("@");
-            }
-            else
-            {
-                printf("%c", a->items[i][j]);
-            }
-        }
-
-        printf("\n");
-    }
-
-    printf("\n");
 }
 
 static void main_move_row(Matrix* a, int di)
@@ -79,7 +126,15 @@ static void main_move_row(Matrix* a, int di)
 
     case '[':
     case ']':
-        break;
+    {
+        if (main_test(a, a->s.i + di, a->s.j, di))
+        {
+            main_update(a, a->s.i + di, a->s.j, di);
+
+            a->s.i += di;
+        }
+    }
+    break;
     }
 }
 
@@ -98,10 +153,12 @@ static void main_move_column(Matrix* a, int dj)
     {
         char* items = a->items[a->s.i];
         size_t j = a->s.j;
+        size_t count = 0;
 
         do
         {
             j += dj;
+            count++;
         }
         while (items[j + dj] == '[' || items[j + dj] == ']');
 
@@ -124,13 +181,6 @@ static void main_move_column(Matrix* a, int dj)
 
 static void main_step(Matrix* a, char opcode)
 {
-    if (isspace(opcode))
-    {
-        return;
-    }
-
-    printf("Move %c:\n", opcode);
-
     switch (opcode)
     {
     case '^':
@@ -149,8 +199,6 @@ static void main_step(Matrix* a, char opcode)
         main_move_column(a, 1);
         break;
     }
-
-    print_matrix(a);
 }
 
 int main()
@@ -206,9 +254,6 @@ int main()
     }
 
     a.n *= 2;
-
-    printf("Initial state:\n");
-    print_matrix(&a);
 
     char buffer[BUFFER_SIZE];
 
