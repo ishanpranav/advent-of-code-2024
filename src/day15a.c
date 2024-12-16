@@ -16,8 +16,8 @@
 
 struct Coordinate
 {
-    size_t i;
-    size_t j;
+    unsigned int i;
+    unsigned int j;
 };
 
 typedef struct Coordinate Coordinate;
@@ -91,18 +91,10 @@ static void main_step(Grid* a, char opcode)
 int main()
 {
     Grid a;
-    size_t m = 0;
-    size_t n = 0;
+    unsigned int m = 0;
 
     if (fgets(a.items[0], MAX_N, stdin))
     {
-        n = strlen(a.items[0]);
-
-        while (n && isspace(a.items[0][n - 1]))
-        {
-            n--;
-        }
-
         m++;
 
         while (fgets(a.items[m], MAX_N, stdin))
@@ -116,7 +108,7 @@ int main()
         }
     }
 
-    for (size_t i = 0; i < m; i++)
+    for (unsigned int i = 0; i < m; i++)
     {
         char* p = strchr(a.items[i], '@');
 
@@ -140,20 +132,20 @@ int main()
         }
     }
 
-    size_t sum = 0;
+    unsigned long sum = 0;
 
-    for (size_t i = 0; i < m; i++)
+    for (unsigned int i = 0; i < m; i++)
     {
-        for (size_t j = 0; j < n; j++)
+        for (const char* p = a.items[i]; *p; p++)
         {
-            if (a.items[i][j] == 'O')
+            if (*p == 'O')
             {
-                sum += i * 100 + j;
+                sum += i * 100 + (p - a.items[i]);
             }
         }
     }
 
-    printf("%zu\n", sum);
+    printf("%lu\n", sum);
 
     return 0;
 }

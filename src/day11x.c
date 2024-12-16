@@ -155,17 +155,12 @@ static unsigned long long dictionary_get(
     return 0;
 }
 
-static void dictionary_clear(Dictionary* instance)
-{
-    instance->count = 0;
-}
-
 static void finalize_dictionary(Dictionary* instance)
 {
-    dictionary_clear(instance);
     free(instance->entries);
     free(instance->buckets);
 
+    instance->count = 0;
     instance->entries = NULL;
     instance->capacity = 0;
     instance->buckets = NULL;

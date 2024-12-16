@@ -112,7 +112,7 @@ static void priority_queue_dequeue(PriorityQueue* instance)
     size_t child = 2;
 
     instance->items[0] = instance->items[instance->count];
-    
+
     while (child < instance->count)
     {
         if (child < instance->count - 1 &&
@@ -180,7 +180,7 @@ int main()
         {
             break;
         }
-        
+
         unsigned int size = buffer[left] - '0';
 
         if (size)
@@ -195,7 +195,7 @@ int main()
             queue->items[queue->count] = offset;
             queue->count++;
         }
-        
+
         offset += size;
         left++;
     }
@@ -233,7 +233,7 @@ int main()
             priority_queue_dequeue(queues + nextIndex - 1);
 
             size_t to = nextIndex - size;
-        
+
             if (to)
             {
                 if (priority_queue_enqueue(queues + to - 1, nextOffset + size))
@@ -254,12 +254,12 @@ int main()
         right--;
     }
 
+    printf("%zu\n", checksum / 4);
+
     for (unsigned int i = 1; i <= 9; i++)
     {
         finalize_priority_queue(queues + i - 1);
     }
-
-    printf("%zu\n", checksum / 4);
 
     return EXIT_SUCCESS;
 }

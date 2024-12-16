@@ -258,7 +258,7 @@ int main()
         }
     }
 
-    size_t sum = 0;
+    unsigned long sum = 0;
 
     for (size_t i = 0; i < m; i++)
     {
