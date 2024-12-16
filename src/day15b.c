@@ -126,15 +126,13 @@ static void main_move_row(Matrix* a, int di)
 
     case '[':
     case ']':
-    {
         if (main_test(a, a->s.i + di, a->s.j, di))
         {
             main_update(a, a->s.i + di, a->s.j, di);
 
             a->s.i += di;
         }
-    }
-    break;
+        break;
     }
 }
 
