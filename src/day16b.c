@@ -1,4 +1,4 @@
-// day16a.c
+// day16b.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
@@ -36,12 +36,19 @@ struct Coordinate
     size_t j;
 };
 
+struct Entry
+{
+    bool reachable;
+    size_t distances[MAX_DIRECTION];
+};
+
 struct Grid
 {
     char items[MAX_M][MAX_N];
     size_t m;
     size_t n;
     Coordinate s;
+    Coordinate t;
 };
 
 struct PriorityQueue
@@ -51,6 +58,7 @@ struct PriorityQueue
     Coordinate* items;
 };
 
+typedef struct Entry Entry;
 typedef struct Grid Grid;
 typedef struct PriorityQueue PriorityQueue;
 
@@ -179,59 +187,108 @@ static void finalize_priority_queue(PriorityQueue* instance)
     instance->capacity = 0;
 }
 
-static size_t dijkstra(bool w[], PriorityQueue* q, const Grid* a)
+static Coordinate coordinate_add(Coordinate u, int di)
+{
+    switch (u.direction)
+    {
+    case DIRECTION_UP:
+        u.i -= di;
+        break;
+
+    case DIRECTION_DOWN:
+        u.i += di;
+        break;
+
+    case DIRECTION_LEFT:
+        u.j -= di;
+        break;
+
+    case DIRECTION_RIGHT:
+        u.j += di;
+        break;
+
+    default: exit(EXIT_FAILURE);
+    }
+
+    return u;
+}
+
+static Coordinate coordinate_rotate_left(Coordinate u)
+{
+    if (u.direction == 0)
+    {
+        u.direction = MAX_DIRECTION - 1;
+    }
+    else
+    {
+        u.direction--;
+    }
+
+    return u;
+}
+
+static Coordinate coordinate_rotate_right(Coordinate u)
+{
+    if (u.direction == MAX_DIRECTION - 1)
+    {
+        u.direction = 0;
+    }
+    else
+    {
+        u.direction++;
+    }
+
+    return u;
+}
+
+static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
 {
     Coordinate s = a->s;
 
     s.priority = 0;
+    w[s.i * a->n + s.j].distances[s.direction] = s.priority;
 
     priority_queue_enqueue(q, s);
+
+    size_t min = SIZE_MAX;
 
     while (q->count)
     {
         Coordinate u = priority_queue_dequeue(q);
 
-        if (a->items[u.i][u.j] == 'E')
-        {
-            return u.priority;
-        }
-
-        size_t k = (u.i * a->n + u.j) * MAX_DIRECTION + u.direction;
-
-        if (w[k])
+        if (min <= u.priority)
         {
             continue;
         }
 
-        w[k] = true;
-
-        Coordinate v = u;
-
-        switch (u.direction)
+        if (u.i == a->t.i && u.j == a->t.j)
         {
-        case DIRECTION_UP:
-            v.i--;
-            break;
-
-        case DIRECTION_DOWN:
-            v.i++;
-            break;
-
-        case DIRECTION_LEFT:
-            v.j--;
-            break;
-
-        case DIRECTION_RIGHT:
-            v.j++;
-            break;
-
-        default:
-            exit(EXIT_FAILURE);
+            min = u.priority;
         }
+
+        Coordinate v = coordinate_add(u, 1);
 
         if (a->items[v.i][v.j] != '#')
         {
             v.priority++;
+
+            if (v.priority < w[v.i * a->n + v.j].distances[v.direction])
+            {
+                w[v.i * a->n + v.j].distances[v.direction] = v.priority;
+
+                if (priority_queue_enqueue(q, v))
+                {
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+
+        v = coordinate_rotate_left(u);
+        v.priority += 1000;
+
+        if (v.priority < w[v.i * a->n + v.j].distances[v.direction])
+        {
+            w[v.i * a->n + v.j].distances[v.direction] = v.priority;
 
             if (priority_queue_enqueue(q, v))
             {
@@ -239,42 +296,91 @@ static size_t dijkstra(bool w[], PriorityQueue* q, const Grid* a)
             }
         }
 
-        v = u;
+        v = coordinate_rotate_right(u);
         v.priority += 1000;
 
-        if (v.direction == MAX_DIRECTION - 1)
+        if (v.priority < w[v.i * a->n + v.j].distances[v.direction])
         {
-            v.direction = 0;
-        }
-        else
-        {
-            v.direction++;
-        }
+            w[v.i * a->n + v.j].distances[v.direction] = v.priority;
 
-        if (priority_queue_enqueue(q, v))
-        {
-            exit(EXIT_FAILURE);
-        }
-
-        v = u;
-        v.priority += 1000;
-
-        if (v.direction == 0)
-        {
-            v.direction = MAX_DIRECTION - 1;
-        }
-        else
-        {
-            v.direction--;
-        }
-
-        if (priority_queue_enqueue(q, v))
-        {
-            exit(EXIT_FAILURE);
+            if (priority_queue_enqueue(q, v))
+            {
+                exit(EXIT_FAILURE);
+            }
         }
     }
 
-    return SIZE_MAX;
+    return min;
+}
+
+static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
+{
+    size_t result = 0;
+
+    if (!w[u.i * a->n + u.j].reachable)
+    {
+        w[u.i * a->n + u.j].reachable = true;
+        result++;
+    }
+
+    if (u.i == a->s.i && u.j == a->s.j)
+    {
+        return result;
+    }
+
+    Coordinate v = coordinate_add(u, -1);
+
+    if (a->items[v.i][v.j] != '#')
+    {
+        v.priority--;
+
+        if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
+        {
+            result += depth_first_search(w, v, a);
+            w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
+        }
+    }
+
+    v = coordinate_rotate_left(u);
+    v.priority -= 1000;
+
+    if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
+    {
+        result += depth_first_search(w, v, a);
+        w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
+    }
+
+    v = coordinate_rotate_right(u);
+    v.priority -= 1000;
+
+    if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
+    {
+        result += depth_first_search(w, v, a);
+        w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
+    }
+
+    return result;
+}
+
+static Coordinate grid_find(const Grid* a, char value)
+{
+    Coordinate u;
+
+    u.j = 0;
+
+    for (u.i = 0; u.i < a->m; u.i++)
+    {
+        char* p = strchr(a->items[u.i], value);
+
+        if (p)
+        {
+            u.j = p - a->items[u.i];
+
+            break;
+        }
+    }
+
+    return u;
 }
 
 int main()
@@ -301,22 +407,22 @@ int main()
         }
     }
 
-    a.s.j = 0;
+    a.s = grid_find(&a, 'S');
     a.s.direction = DIRECTION_RIGHT;
+    a.t = grid_find(&a, 'E');
 
-    for (a.s.i = 0; a.s.i < a.m; a.s.i++)
+    Entry* w = malloc(a.m * a.n * MAX_DIRECTION * sizeof * w);
+
+    for (size_t k = 0; k < a.m * a.n; k++)
     {
-        char* p = strchr(a.items[a.s.i], 'S');
+        w[k].reachable = false;
 
-        if (p)
+        for (Direction d = 0; d < MAX_DIRECTION; d++)
         {
-            a.s.j = p - a.items[a.s.i];
-
-            break;
+            w[k].distances[d] = SIZE_MAX;
         }
     }
 
-    bool* w = calloc(a.m * a.n * MAX_DIRECTION, sizeof * w);
     PriorityQueue q;
 
     if (priority_queue(&q, 0))
@@ -324,9 +430,22 @@ int main()
         return EXIT_FAILURE;
     }
 
-    printf("%zu\n", dijkstra(w, &q, &a));
-    finalize_priority_queue(&q);
+    size_t min = dijkstra(w, &q, &a);
+    Entry* wt = w + (a.t.i * a.n + a.t.j);
+    size_t result = 0;
+
+    for (a.t.direction = 0; a.t.direction < MAX_DIRECTION; a.t.direction++)
+    {
+        if (wt->distances[a.t.direction] == min)
+        {
+            a.t.priority = min;
+            result += depth_first_search(w, a.t, &a);
+        }
+    }
+
+    printf("%zu\n", result);
     free(w);
+    finalize_priority_queue(&q);
 
     return EXIT_SUCCESS;
 }

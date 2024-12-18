@@ -20,13 +20,13 @@ $d^\ast\in D$ be the current direction.
 **Algorithm:**
 
 * let $Q\leftarrow$ empty priority queue;
-* let $w_{u,d}\leftarrow+\infty$ for $u\in V$ and $d\in D$;
+* let $W\leftarrow\emptyset$;
 * enqueue item $(s,d^\ast)$ into $Q$ with priority $0$;
 * while $Q$ is not empty:
   * let item $(u,d)$, priority $w\leftarrow$ dequeue from $Q$;
   * if $u=t$, then return $w$;
-  * if $w_{u,d}\leq w$, then continue to next iteration;
-  * assign $w_{u,d}\leftarrow w$;
+  * if $(u,d)\in V$, then continue to next iteration;
+  * assign $D\leftarrow D\cup\lbrace(u,d)\rbrace$;
   * let $v\leftarrow u+d$;
   * if $v\in V$, then enqueue item $(v,d)$ into $Q$ with priority $w+1$;
   * enqueue item $(u,r_0(d))$ into $Q$ with priority $w+1000$;

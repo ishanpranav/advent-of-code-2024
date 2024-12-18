@@ -7,8 +7,8 @@
 #include <stdio.h>
 #ifndef DAY14
 #define DAY14
-#define MAX_X 11
-#define MAX_Y 7
+#define MAX_X 101
+#define MAX_Y 103
 #endif
 #define T 100
 
@@ -20,7 +20,7 @@ struct Vector
 
 typedef struct Vector Vector;
 
-static int mod(int dividend, int divisor) 
+static int mod(int dividend, int divisor)
 {
     int result = dividend % divisor;
 
@@ -33,7 +33,7 @@ static int mod(int dividend, int divisor)
 
         return result + divisor;
     }
-    
+
     return result;
 }
 

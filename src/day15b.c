@@ -32,7 +32,7 @@ struct Grid
 
 typedef struct Grid Grid;
 
-static void main_update(Grid* a, size_t i, size_t j, int di)
+static void depth_first_search_update(Grid* a, size_t i, size_t j, int di)
 {
     if (a->items[i][j] == ']')
     {
@@ -41,17 +41,17 @@ static void main_update(Grid* a, size_t i, size_t j, int di)
 
     if (a->items[i + di][j] == '[' && a->items[i + di][j + 1] == ']')
     {
-        main_update(a, i + di, j, di);
+        depth_first_search_update(a, i + di, j, di);
     }
 
     if (a->items[i + di][j] == ']')
     {
-        main_update(a, i + di, j - 1, di);
+        depth_first_search_update(a, i + di, j - 1, di);
     }
 
     if (a->items[i + di][j + 1] == '[')
     {
-        main_update(a, i + di, j + 1, di);
+        depth_first_search_update(a, i + di, j + 1, di);
     }
 
     a->items[i][j] = '.';
@@ -60,7 +60,7 @@ static void main_update(Grid* a, size_t i, size_t j, int di)
     a->items[i + di][j + 1] = ']';
 }
 
-static bool main_test(const Grid* a, size_t i, size_t j, int di)
+static bool depth_first_search_test(const Grid* a, size_t i, size_t j, int di)
 {
     if (a->items[i][j] == ']')
     {
@@ -80,24 +80,24 @@ static bool main_test(const Grid* a, size_t i, size_t j, int di)
         return true;
     }
 
-    if (left == '[' && main_test(a, i + di, j, di))
+    if (left == '[' && depth_first_search_test(a, i + di, j, di))
     {
         return true;
     }
 
-    if (left == '.' && right == '[' && main_test(a, i + di, j + 1, di))
+    if (left == '.' && right == '[' && depth_first_search_test(a, i + di, j + 1, di))
     {
         return true;
     }
 
-    if (left == ']' && right == '.' && main_test(a, i + di, j - 1, di))
+    if (left == ']' && right == '.' && depth_first_search_test(a, i + di, j - 1, di))
     {
         return true;
     }
 
     return left == ']' && right == '[' &&
-        main_test(a, i + di, j + 1, di) &&
-        main_test(a, i + di, j - 1, di);
+        depth_first_search_test(a, i + di, j + 1, di) &&
+        depth_first_search_test(a, i + di, j - 1, di);
 }
 
 static void main_move_row(Grid* a, int di)
@@ -112,9 +112,9 @@ static void main_move_row(Grid* a, int di)
 
     case '[':
     case ']':
-        if (main_test(a, a->s.i + di, a->s.j, di))
+        if (depth_first_search_test(a, a->s.i + di, a->s.j, di))
         {
-            main_update(a, a->s.i + di, a->s.j, di);
+            depth_first_search_update(a, a->s.i + di, a->s.j, di);
 
             a->s.i += di;
         }
