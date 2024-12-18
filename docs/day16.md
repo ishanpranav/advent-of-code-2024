@@ -50,7 +50,7 @@ $d^\ast\in D$ be the current direction.
 
 **Algorithm 3:**
 
-* let $(w^\ast,w_{u,d}~\forall u\in V~\forall d\in D)\leftarrow$ invoke Algorithm 1;
+* let $(w^\ast,w_{u,d}~\forall u\in V~\forall d\in D)\leftarrow$ invoke Algorithm 2;
 * let $r_u\leftarrow\mathrm{false}$ for all $u\in V$;
 * let $x\leftarrow 0$;
 * for $d\in D$:
