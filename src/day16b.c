@@ -315,17 +315,17 @@ static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
 
 static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
 {
-    size_t result = 0;
+    size_t x = 0;
 
     if (!w[u.i * a->n + u.j].reachable)
     {
         w[u.i * a->n + u.j].reachable = true;
-        result++;
+        x++;
     }
 
     if (u.i == a->s.i && u.j == a->s.j)
     {
-        return result;
+        return x;
     }
 
     Coordinate v = coordinate_add(u, -1);
@@ -336,7 +336,7 @@ static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
 
         if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
         {
-            result += depth_first_search(w, v, a);
+            x += depth_first_search(w, v, a);
             w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
         }
     }
@@ -346,7 +346,7 @@ static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
 
     if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
     {
-        result += depth_first_search(w, v, a);
+        x += depth_first_search(w, v, a);
         w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
     }
 
@@ -355,11 +355,11 @@ static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
 
     if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
     {
-        result += depth_first_search(w, v, a);
+        x += depth_first_search(w, v, a);
         w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
     }
 
-    return result;
+    return x;
 }
 
 static Coordinate grid_find(const Grid* a, char value)
@@ -431,18 +431,18 @@ int main()
     }
 
     size_t min = dijkstra(w, &q, &a);
-    size_t result = 0;
+    size_t x = 0;
 
     for (a.t.direction = 0; a.t.direction < MAX_DIRECTION; a.t.direction++)
     {
         if (w[a.t.i * a.n + a.t.j].distances[a.t.direction] == min)
         {
             a.t.priority = min;
-            result += depth_first_search(w, a.t, &a);
+            x += depth_first_search(w, a.t, &a);
         }
     }
 
-    printf("%zu\n", result);
+    printf("%zu\n", x);
     free(w);
     finalize_priority_queue(&q);
 
