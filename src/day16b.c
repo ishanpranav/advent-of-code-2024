@@ -42,6 +42,8 @@ struct Entry
     size_t distances[MAX_DIRECTION];
 };
 
+typedef struct Entry Entry;
+
 struct Grid
 {
     char items[MAX_M][MAX_N];
@@ -58,9 +60,15 @@ struct PriorityQueue
     Coordinate* items;
 };
 
-typedef struct Entry Entry;
+struct Table
+{
+    size_t reachable;
+    Entry* entries;
+};
+
 typedef struct Grid Grid;
 typedef struct PriorityQueue PriorityQueue;
+typedef struct Table Table;
 
 static int priority_queue(PriorityQueue* instance, size_t capacity)
 {
@@ -241,12 +249,12 @@ static Coordinate coordinate_rotate_right(Coordinate u)
     return u;
 }
 
-static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
+static size_t dijkstra(Table* w, PriorityQueue* q, const Grid* a)
 {
     Coordinate s = a->s;
 
     s.priority = 0;
-    w[s.i * a->n + s.j].distances[s.direction] = s.priority;
+    w->entries[s.i * a->n + s.j].distances[s.direction] = s.priority;
 
     priority_queue_enqueue(q, s);
 
@@ -272,9 +280,11 @@ static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
         {
             v.priority++;
 
-            if (v.priority < w[v.i * a->n + v.j].distances[v.direction])
+            size_t* p = &w->entries[v.i * a->n + v.j].distances[v.direction];
+
+            if (v.priority < *p)
             {
-                w[v.i * a->n + v.j].distances[v.direction] = v.priority;
+                *p = v.priority;
 
                 if (priority_queue_enqueue(q, v))
                 {
@@ -286,9 +296,9 @@ static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
         v = coordinate_rotate_left(u);
         v.priority += 1000;
 
-        if (v.priority < w[v.i * a->n + v.j].distances[v.direction])
+        if (v.priority < w->entries[v.i * a->n + v.j].distances[v.direction])
         {
-            w[v.i * a->n + v.j].distances[v.direction] = v.priority;
+            w->entries[v.i * a->n + v.j].distances[v.direction] = v.priority;
 
             if (priority_queue_enqueue(q, v))
             {
@@ -299,9 +309,9 @@ static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
         v = coordinate_rotate_right(u);
         v.priority += 1000;
 
-        if (v.priority < w[v.i * a->n + v.j].distances[v.direction])
+        if (v.priority < w->entries[v.i * a->n + v.j].distances[v.direction])
         {
-            w[v.i * a->n + v.j].distances[v.direction] = v.priority;
+            w->entries[v.i * a->n + v.j].distances[v.direction] = v.priority;
 
             if (priority_queue_enqueue(q, v))
             {
@@ -313,19 +323,17 @@ static size_t dijkstra(Entry w[], PriorityQueue* q, const Grid* a)
     return min;
 }
 
-static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
+static void depth_first_search(Table* w, Coordinate u, const Grid* a)
 {
-    size_t x = 0;
-
-    if (!w[u.i * a->n + u.j].reachable)
+    if (!w->entries[u.i * a->n + u.j].reachable)
     {
-        w[u.i * a->n + u.j].reachable = true;
-        x++;
+        w->entries[u.i * a->n + u.j].reachable = true;
+        w->reachable++;
     }
 
     if (u.i == a->s.i && u.j == a->s.j)
     {
-        return x;
+        return;
     }
 
     Coordinate v = coordinate_add(u, -1);
@@ -334,32 +342,33 @@ static size_t depth_first_search(Entry w[], Coordinate u, const Grid* a)
     {
         v.priority--;
 
-        if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
+        if (v.priority == w->entries[v.i * a->n + v.j].distances[v.direction])
         {
-            x += depth_first_search(w, v, a);
-            w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
+            depth_first_search(w, v, a);
+
+            w->entries[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
         }
     }
 
     v = coordinate_rotate_left(u);
     v.priority -= 1000;
 
-    if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
+    if (v.priority == w->entries[v.i * a->n + v.j].distances[v.direction])
     {
-        x += depth_first_search(w, v, a);
-        w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
+        depth_first_search(w, v, a);
+
+        w->entries[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
     }
 
     v = coordinate_rotate_right(u);
     v.priority -= 1000;
 
-    if (v.priority == w[v.i * a->n + v.j].distances[v.direction])
+    if (v.priority == w->entries[v.i * a->n + v.j].distances[v.direction])
     {
-        x += depth_first_search(w, v, a);
-        w[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
-    }
+        depth_first_search(w, v, a);
 
-    return x;
+        w->entries[v.i * a->n + v.j].distances[v.direction] = SIZE_MAX;
+    }
 }
 
 static Coordinate grid_find(const Grid* a, char value)
@@ -411,15 +420,23 @@ int main()
     a.s.direction = DIRECTION_RIGHT;
     a.t = grid_find(&a, 'E');
 
-    Entry* w = malloc(a.m * a.n * MAX_DIRECTION * sizeof * w);
+    Table w;
+
+    w.reachable = 0;
+    w.entries = malloc(a.m * a.n * sizeof * w.entries);
+
+    if (!w.entries)
+    {
+        return EXIT_FAILURE;
+    }
 
     for (size_t k = 0; k < a.m * a.n; k++)
     {
-        w[k].reachable = false;
+        w.entries[k].reachable = false;
 
         for (Direction d = 0; d < MAX_DIRECTION; d++)
         {
-            w[k].distances[d] = SIZE_MAX;
+            w.entries[k].distances[d] = SIZE_MAX;
         }
     }
 
@@ -430,20 +447,20 @@ int main()
         return EXIT_FAILURE;
     }
 
-    size_t min = dijkstra(w, &q, &a);
-    size_t x = 0;
+    size_t min = dijkstra(&w, &q, &a);
 
     for (a.t.direction = 0; a.t.direction < MAX_DIRECTION; a.t.direction++)
     {
-        if (w[a.t.i * a.n + a.t.j].distances[a.t.direction] == min)
+        if (w.entries[a.t.i * a.n + a.t.j].distances[a.t.direction] == min)
         {
             a.t.priority = min;
-            x += depth_first_search(w, a.t, &a);
+
+            depth_first_search(&w, a.t, &a);
         }
     }
 
-    printf("%zu\n", x);
-    free(w);
+    printf("%zu\n", w.reachable);
+    free(w.entries);
     finalize_priority_queue(&q);
 
     return EXIT_SUCCESS;
