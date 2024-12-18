@@ -431,12 +431,11 @@ int main()
     }
 
     size_t min = dijkstra(w, &q, &a);
-    Entry* wt = w + (a.t.i * a.n + a.t.j);
     size_t result = 0;
 
     for (a.t.direction = 0; a.t.direction < MAX_DIRECTION; a.t.direction++)
     {
-        if (wt->distances[a.t.direction] == min)
+        if (w[a.t.i * a.n + a.t.j].distances[a.t.direction] == min)
         {
             a.t.priority = min;
             result += depth_first_search(w, a.t, &a);
