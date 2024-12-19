@@ -165,7 +165,7 @@ int main()
 
         for (char* p = strtok(buffer, ","); p; p = strtok(NULL, ","))
         {
-            unsigned int u = strtol(p, NULL, 10);
+            unsigned int u = atoi(p);
 
             subset[u] = true;
             vertices[vertexCount] = u;

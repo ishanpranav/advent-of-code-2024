@@ -17,7 +17,7 @@ int main()
 {
     char buffer[BUFFER_SIZE];
     size_t read = fread(buffer, 1, BUFFER_SIZE - 1, stdin);
-    
+
     buffer[read] = '\0';
 
     char* line = buffer;
