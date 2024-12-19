@@ -49,16 +49,16 @@ struct Machine
 {
     bool output;
     Word program[PROGRAM_SIZE];
-    int a;
-    int b;
-    int c;
+    long long a;
+    long long b;
+    long long c;
     unsigned int instructionPointer;
     unsigned int programSize;
 };
 
 typedef struct Machine Machine;
 
-static int machine_evaluate(const Machine* instance, Word operand)
+static long long machine_evaluate(const Machine* instance, Word operand)
 {
     if (operand.literal <= 3)
     {
@@ -83,17 +83,17 @@ int main()
     machine.instructionPointer = 0;
     machine.programSize = 0;
 
-    if (scanf("Register A: %d ", &machine.a) != 1)
+    if (scanf("Register A: %lld ", &machine.a) != 1)
     {
         machine.a = 0;
     }
 
-    if (scanf("Register B: %d ", &machine.b) != 1)
+    if (scanf("Register B: %lld ", &machine.b) != 1)
     {
         machine.b = 0;
     }
 
-    if (scanf("Register C: %d ", &machine.c) != 1)
+    if (scanf("Register C: %lld ", &machine.c) != 1)
     {
         machine.c = 0;
     }
@@ -175,7 +175,7 @@ int main()
 
             machine.output = true;
 
-            printf("%d", result.literal);
+            printf("%u", result.literal);
         }
         break;
 
@@ -198,19 +198,19 @@ int main()
 #if SAMPLE
     printf(
         "\n\n"
-        "Register A: %d\n"
-        "Register B: %d\n"
-        "Register C: %d\n" "\n"
+        "Register A: %lld\n"
+        "Register B: %lld\n"
+        "Register C: %lld\n" "\n"
         "Program: ",
         machine.a, machine.b, machine.c);
 
     if (machine.programSize)
     {
-        printf("%d", machine.program[0].literal);
+        printf("%u", machine.program[0].literal);
 
         for (unsigned int i = 1; i < machine.programSize; i++)
         {
-            printf(",%d", machine.program[i].literal);
+            printf(",%u", machine.program[i].literal);
         }
     }
 #endif
