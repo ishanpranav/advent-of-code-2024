@@ -22,6 +22,8 @@ impressive work at [maneatingape/advent-of-code-rust](https://github.com/maneati
 **Day 14(b):** By design, there is no generalized heuristic-free algorithm for
 Day 14(b).
 
+**Day 17(b):** By design, there is no general solution for Day 17(b).
+
 ## Usage
 
 These programs are cross-platform, having been tested on Windows and Linux

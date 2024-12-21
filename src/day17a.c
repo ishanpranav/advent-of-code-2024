@@ -10,8 +10,8 @@
 #include <string.h>
 #ifndef DAY17
 #define DAY17
-#define BUFFER_SIZE 32
-#define PROGRAM_SIZE 8
+#define BUFFER_SIZE 64
+#define PROGRAM_SIZE 16
 #define SAMPLE true
 #endif
 
@@ -57,6 +57,30 @@ struct Machine
 };
 
 typedef struct Machine Machine;
+
+static const char* OPCODE_STRINGS[] =
+{
+    [OPCODE_ADV] = "adv",
+    [OPCODE_BXL] = "bxl",
+    [OPCODE_BST] = "bst",
+    [OPCODE_JNZ] = "jnz",
+    [OPCODE_BXC] = "bxc",
+    [OPCODE_OUT] = "out",
+    [OPCODE_BDV] = "bdv",
+    [OPCODE_CDV] = "cdv"
+};
+
+static const char* OPERAND_STRINGS[] =
+{
+    [0] = "$0",
+    [1] = "$1",
+    [2] = "$2",
+    [3] = "$3",
+    [OPERAND_A] = "a",
+    [OPERAND_B] = "b",
+    [OPERAND_C] = "c",
+    [7] = "*"
+};
 
 static long long machine_evaluate(const Machine* instance, Word operand)
 {
@@ -216,6 +240,38 @@ int main()
 #endif
 
     printf("\n");
+
+#if SAMPLE
+    printf("\nDisassembly:\n");
+
+    for (unsigned int i = 0; i < machine.programSize; i += 2)
+    {
+        Word opcode = machine.program[i];
+        Word operand = machine.program[i + 1];
+
+        switch (opcode.literal)
+        {
+        case OPCODE_ADV:
+        case OPCODE_BDV:
+        case OPCODE_CDV:
+        case OPCODE_BST:
+        case OPCODE_OUT:
+            // if (opcode.literal < 7)
+        // {
+        //     printf("opcode literal is %d > 7\n", opcode.literal);
+        // }
+            printf("%s %s\n",
+                OPCODE_STRINGS[opcode.literal],
+                OPERAND_STRINGS[operand.literal]);
+            break;
+
+        case OPCODE_BXL:
+        case OPCODE_JNZ:
+            printf("%s $%d\n", OPCODE_STRINGS[opcode.literal], operand.literal);
+            break;
+        }
+    }
+#endif
 
     return EXIT_SUCCESS;
 }
