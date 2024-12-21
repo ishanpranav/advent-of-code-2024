@@ -6,7 +6,7 @@
 
 # Day 16: Reindeer Maze
 
-Let $G=(V,E)$ be a directed graph.
+Let $G=(V,E)$ be a graph.
 
 Let $D$ be the set of directions where for all $d\in D$, we have $d:V\to V$.
 
@@ -44,7 +44,7 @@ $d^\ast\in D$ be the current direction.
 
 **Time complexity:** $O((\lvert V\rvert+\lvert E\rvert)\log{\lvert V\rvert})=O(\lvert V\rvert\log{\lvert V\rvert})$ for $\lvert E\rvert=O(\lvert V\rvert)$.
 
-**Space complexity:** $O(\lvert V\rvert+\lvert E\rvert)=O(\lvert V\rvert)$ for $\lvert E\rvert=O(\lvert V\rvert)$.
+**Space complexity:** $O(\lvert V\rvert)$.
 
 ## Part B
 
@@ -72,4 +72,4 @@ $d^\ast\in D$ be the current direction.
 
 **Time complexity:** $O((\lvert V\rvert+\lvert E\rvert)\log{\lvert V\rvert})=O(\lvert V\rvert\log{\lvert V\rvert})$ for $\lvert E\rvert=O(\lvert V\rvert)$.
 
-**Space complexity:** $O(\lvert V\rvert+\lvert E\rvert)=O(\lvert V\rvert)$ for $\lvert E\rvert=O(\lvert V\rvert)$.
+**Space complexity:** $O(\lvert V\rvert)$.
