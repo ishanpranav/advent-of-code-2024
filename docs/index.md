@@ -26,7 +26,7 @@ for each solution.
 - [Day 11](/advent-of-code-2024/day11)
 - [Day 12](/advent-of-code-2024/day12)
 - [Day 13](/advent-of-code-2024/day13)
-- [Day 14](https://github.com/ishanpranav/advent-of-code-2024/blob/master/src/day14a.c)
+- [Day 14](/advent-of-code-2024/day14)
 - [Day 15](https://github.com/ishanpranav/advent-of-code-2024/blob/master/src/day15b.c)
 - [Day 16](/advent-of-code-2024/day16)
 - [Day 17](https://github.com/ishanpranav/advent-of-code-2024/blob/master/src/day17a.c)
