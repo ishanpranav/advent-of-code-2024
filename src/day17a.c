@@ -256,10 +256,6 @@ int main()
         case OPCODE_CDV:
         case OPCODE_BST:
         case OPCODE_OUT:
-            // if (opcode.literal < 7)
-        // {
-        //     printf("opcode literal is %d > 7\n", opcode.literal);
-        // }
             printf("%s %s\n",
                 OPCODE_STRINGS[opcode.literal],
                 OPERAND_STRINGS[operand.literal]);
