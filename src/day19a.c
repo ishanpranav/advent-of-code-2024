@@ -9,15 +9,15 @@
 #include <stdio.h>
 #include <string.h>
 #ifndef DAY19
-#define BUFFER_SIZE 32
-#define MAX_PREFIXES 8
-#define MAX_PREFIX_LENGTH 4
+#define BUFFER_SIZE 4096
+#define MAX_PREFIXES 512
+#define MAX_N 64
 #endif
 
 struct Trie
 {
     unsigned int count;
-    char items[MAX_PREFIXES][MAX_PREFIX_LENGTH];
+    char items[MAX_PREFIXES][MAX_N];
 };
 
 typedef struct Trie Trie;
@@ -34,71 +34,71 @@ static void trie_add(Trie* instance, char* item)
     instance->count++;
 }
 
-static bool main_step(const char b[BUFFER_SIZE], size_t n, const Trie* t)
-{
-    bool d[BUFFER_SIZE];
-
-    d[0] = 1;
-
-    memset(d + 1, 0, n * sizeof * d);
-
-    for (size_t i = 0; i < n; i++)
-    {
-        if (!d[i])
-        {
-            continue;
-        }
-
-        for ()
-        {
-
-        }
-    }
-
-    return d[n - 1];
-}
-
 int main()
 {
     char buffer[BUFFER_SIZE];
+    unsigned int x = 0;
 
-    if (!fgets(buffer, BUFFER_SIZE, stdin))
+    if (fgets(buffer, BUFFER_SIZE, stdin))
     {
-        return 1;
-    }
+        Trie t;
 
-    Trie t;
+        trie(&t);
 
-    trie(&t);
-
-    for (char* p = strtok(buffer, ","); p; p = strtok(NULL, ","))
-    {
-        trie_add(&t, p);
-    }
-
-    unsigned int k = 0;
-
-    while (fgets(buffer, BUFFER_SIZE, stdin))
-    {
-        size_t n = strlen(buffer);
-
-        while (n && isspace(buffer[n - 1]))
+        for (char* p = strtok(buffer, ", \r\n"); p; p = strtok(NULL, ", \r\n"))
         {
-            n--;
+            trie_add(&t, p);
         }
 
-        if (!n)
-        {
-            continue;
-        }
+        char b[MAX_N];
 
-        if (main_step(buffer, n, &t))
+        while (fgets(b, MAX_N, stdin))
         {
-            k++;
+            size_t n = strlen(b);
+
+            while (n && isspace(b[n - 1]))
+            {
+                n--;
+            }
+
+            if (!n)
+            {
+                continue;
+            }
+
+            bool d[MAX_N];
+
+            d[0] = true;
+
+            memset(d + 1, 0, n * sizeof * d);
+
+            for (size_t k = 1; k <= n; k++)
+            {
+                for (unsigned int j = 0; j < t.count; j++)
+                {
+                    const char* a = t.items[j];
+                    size_t m = strlen(a);
+
+                    if (m > k)
+                    {
+                        continue;
+                    }
+
+                    if (memcmp(b + k - m, a, m) == 0)
+                    {
+                        d[k] |= d[k - m];
+                    }
+                }
+            }
+
+            if (d[n])
+            {
+                x++;
+            }
         }
     }
 
-    printf("%u\n", k);
+    printf("%u\n", x);
 
     return 0;
 }

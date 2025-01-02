@@ -17,7 +17,7 @@ for each solution.
 exceeding $O(1)$. The algorithm with $O(1)$ space complexity comes from the
 impressive work at [maneatingape/advent-of-code-rust](https://github.com/maneatingape/advent-of-code-rust).
 
-**Day 18:** The union-find-based technique for Day 18(b)
+**Day 18:** The union–find-based technique for Day 18(b)
 is inspired by [this Reddit conversation](https://www.reddit.com/r/adventofcode/comments/1hguacy/comment/m2m8wlg/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
 
 ## Omissions

@@ -12,13 +12,13 @@ Let $A,B$ be sets of sequences.
 
 **Algorithm:**
 
-* let $k\leftarrow 0$;
+* let $x\leftarrow 0$;
 * for $(b_0,\dots b_{n-1})\in B$:
-  * define $d_i\leftarrow\mathrm{false}$ for $0\leq i\lt n$;
-  * assign $d_0\leftarrow\mathrm{true}$;
-  * for $i\in(0,\dots,n-1)$:
-    * if not $d_i$, then continue to next $i$;
+  * define $d_0\leftarrow\mathrm{true}$;
+  * define $d_k\leftarrow\mathrm{false}$ for $1\leq k\leq n$;
+  * for $k\in(1,\dots,n)$:
     * for $(a_0,\dots,a_{m-1})\in A$:
-      * assign $d_{i+m}\leftarrow(b_i,\dots,b_{i+m})\equiv(a_0,\dots,a_{m-1})$;
-  * if $d_{n-1}$, then assign $k\leftarrow k+1$;
-* return $k$.
+      * if $(b_{k-m},\dots,b_{k-1})\equiv(a_0,\dots,a_{m-1})$, then:
+        * assign $d_k\leftarrow d_k\lor d_{k-m}$;
+  * if $d_n$, then assign $x\leftarrow x+1$;
+* return $x$.
