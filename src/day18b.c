@@ -11,7 +11,6 @@
 #define DAY18
 #define DIMENSION 7
 #endif
-#define queue_is_empty(instance) ((instance)->first == -1)
 
 struct Point
 {
@@ -21,9 +20,17 @@ struct Point
 
 typedef struct Point Point;
 
+struct DisjointSubset
+{
+    unsigned int count;
+    Point parent;
+};
+
+typedef struct DisjointSubset DisjointSubset;
+
 struct DisjointSet
 {
-    Point parents[DIMENSION][DIMENSION];
+    DisjointSubset subsets[DIMENSION][DIMENSION];
 };
 
 struct Stack
@@ -43,33 +50,28 @@ static void disjoint_set(DisjointSet* instance)
     {
         for (u.y = 0; u.y < DIMENSION; u.y++)
         {
-            instance->parents[u.x][u.y] = u;
+            instance->subsets[u.x][u.y].count = 1;
+            instance->subsets[u.x][u.y].parent = u;
         }
     }
 }
 
 static Point disjoint_set_find(DisjointSet* instance, Point u)
 {
-    Point parent = instance->parents[u.x][u.y];
+    Point* parent = &instance->subsets[u.x][u.y].parent;
 
-    if (u.x == parent.x && u.y == parent.y)
+    if (u.x != parent->x || u.y != parent->y)
     {
-        return u;
+        *parent = disjoint_set_find(instance, *parent);
     }
 
-    return disjoint_set_find(instance, parent);
+    return *parent;
 }
 
 static bool disjoint_set_disjoint(DisjointSet* instance, Point u, Point v)
 {
-    printf("are they disjoint? (%u,%u) and (%u,%u)\n", u.x, u.y, v.x, v.y);
-
-    printf("parent of (%u,%u): ", u.x, u.y);
     u = disjoint_set_find(instance, u);
-    printf("(%u,%u)\n", u.x, u.y);
-    printf("parent of (%u,%u): ", v.x, v.y);
     v = disjoint_set_find(instance, v);
-    printf("(%u,%u)\n", v.x, v.y);
 
     return u.x != v.x || u.y != v.y;
 }
@@ -78,7 +80,25 @@ static void disjoint_set_union(DisjointSet* instance, Point u, Point v)
 {
     u = disjoint_set_find(instance, u);
     v = disjoint_set_find(instance, v);
-    instance->parents[u.x][u.y] = v;
+
+    if (u.x == v.x && u.y == v.y)
+    {
+        return;
+    }
+
+    DisjointSubset* uSet = instance->subsets[u.x] + u.y;
+    DisjointSubset* vSet = instance->subsets[v.x] + v.y;
+
+    if (uSet->count < vSet->count)
+    {
+        uSet->parent = v;
+        vSet->count += uSet->count;
+    }
+    else
+    {
+        vSet->parent = u;
+        uSet->count += vSet->count;
+    }
 }
 
 static void stack(Stack* instance)
@@ -181,7 +201,6 @@ int main()
     while (disjoint_set_disjoint(&p, s, t))
     {
         u = stack_pop(&pointStack);
-        printf("top of stack is %u,%u\n", u.x, u.y);
         pointSet[u.x][u.y] = false;
 
         main_step(&p, u, pointSet);
