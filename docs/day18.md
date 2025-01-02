@@ -35,7 +35,8 @@ Let $S$ be a stack where for all $u\in S$, we have $u\in U$.
     * union $u,v$ in $\mathcal{P}$;
 * let $u\leftarrow$ nil;
 * while $s,t$ disjoint in $\mathcal{P}$:
-  * assign $u\leftarrow$ remove first from $S$;
+  * assign $u\leftarrow$ pop off of $S$;
+  * assign $U\leftarrow U\setminus\lbrace u\rbrace$;
   * for $(u,v)\in E$ where $v\notin U$:
     * union $u,v$ in $\mathcal{P}$;
 * return $u$.

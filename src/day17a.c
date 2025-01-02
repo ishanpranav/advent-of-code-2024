@@ -58,6 +58,7 @@ struct Machine
 
 typedef struct Machine Machine;
 
+#if SAMPLE
 static const char* OPCODE_STRINGS[] =
 {
     [OPCODE_ADV] = "adv",
@@ -81,6 +82,7 @@ static const char* OPERAND_STRINGS[] =
     [OPERAND_C] = "c",
     [7] = "*"
 };
+#endif
 
 static long long machine_evaluate(const Machine* instance, Word operand)
 {

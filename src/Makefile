@@ -11,7 +11,7 @@ all: day01a day01b day02a day02b day03a day03b day04a day04b day05a day05b \
 	day14a day14s \
 	day15a day15b day16a day16b \
 	day17a day17s \
-	day18a day18b day18s \
+	day18a day18b day18s day18t \
 	day19a day19b day20a day20b day21a day21b day22a day22b day23a day23b \
 	day24a day24b day25z
 
@@ -53,6 +53,12 @@ day18a: day18a.c
 	
 day18s: day18a.c
 	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=7 -DMAX_POINTS=12 $< -o $@
+
+day18b: day18b.c
+	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=71 $< -o $@
+	
+day18t: day18b.c
+	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=7 $< -o $@
 
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@

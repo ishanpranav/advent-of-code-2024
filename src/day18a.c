@@ -133,27 +133,25 @@ static unsigned int breadth_first_search(unsigned int d[DIMENSION][DIMENSION])
 
 int main()
 {
+    Point u;
     unsigned int d[DIMENSION][DIMENSION];
 
-    for (unsigned int x = 0; x < DIMENSION; x++)
+    for (u.x = 0; u.x < DIMENSION; u.x++)
     {
-        for (unsigned int y = 0; y < DIMENSION; y++)
+        for (u.y = 0; u.y < DIMENSION; u.y++)
         {
-            d[x][y] = UINT_MAX;
+            d[u.x][u.y] = UINT_MAX;
         }
     }
 
     for (unsigned int k = 0; k < MAX_POINTS; k++)
     {
-        unsigned int x;
-        unsigned int y;
-
-        if (scanf("%u,%u ", &x, &y) != 2)
+        if (scanf("%u,%u ", &u.x, &u.y) != 2)
         {
             break;
         }
 
-        d[x][y] = 0;
+        d[u.x][u.y] = 0;
     }
 
     printf("%d\n", breadth_first_search(d));
