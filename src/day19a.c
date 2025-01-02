@@ -4,34 +4,45 @@
 
 // Linen Layout
 
+#include <stdlib.h>
+
 #include <ctype.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #ifndef DAY19
 #define BUFFER_SIZE 4096
-#define MAX_PREFIXES 512
 #define MAX_N 64
 #endif
 
-struct Trie
-{
-    unsigned int count;
-    char items[MAX_PREFIXES][MAX_N];
-};
-
 typedef struct Trie Trie;
 
-static void trie(Trie* instance)
+struct Trie
 {
-    instance->count = 0;
-}
+    bool leaf;
+    Trie* children[26];
+};
 
-static void trie_add(Trie* instance, char* item)
+static void trie_add(Trie* instance, const char* item)
 {
-    strcpy(instance->items[instance->count], item);
+    Trie* current = instance;
 
-    instance->count++;
+    for (; *item; item++)
+    {
+        unsigned int index = *item - 'a';
+
+        if (!current->children[index])
+        {
+            Trie* child = calloc(1, sizeof * child);
+
+            current->children[index] = child;
+        }
+
+        current = current->children[index];
+    }
+
+    current->leaf = true;
 }
 
 int main()
@@ -41,9 +52,7 @@ int main()
 
     if (fgets(buffer, BUFFER_SIZE, stdin))
     {
-        Trie t;
-
-        trie(&t);
+        Trie t = { 0 };
 
         for (char* p = strtok(buffer, ", \r\n"); p; p = strtok(NULL, ", \r\n"))
         {
@@ -72,21 +81,27 @@ int main()
 
             memset(d + 1, 0, n * sizeof * d);
 
-            for (size_t k = 1; k <= n; k++)
+            for (size_t i = 0; i < n; i++)
             {
-                for (unsigned int j = 0; j < t.count; j++)
+                if (!d[i])
                 {
-                    const char* a = t.items[j];
-                    size_t m = strlen(a);
+                    continue;
+                }
 
-                    if (m > k)
+                const Trie* current = &t;
+
+                for (size_t k = 0; k < n - i; k++)
+                {
+                    current = current->children[(unsigned int)(b[i + k] - 'a')];
+
+                    if (!current)
                     {
-                        continue;
+                        break;
                     }
 
-                    if (memcmp(b + k - m, a, m) == 0)
+                    if (current->leaf)
                     {
-                        d[k] |= d[k - m];
+                        d[i + k + 1] |= d[i];
                     }
                 }
             }
