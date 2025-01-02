@@ -100,7 +100,12 @@ int main()
                 continue;
             }
 
-            bool d[MAX_M][MAX_N] = { 0 };
+            bool d[MAX_M][MAX_N];
+
+            for (size_t k = 0; k < a.m; k++)
+            {
+                memset(d[k], 0, sizeof * d[k] * a.n);
+            }
 
             x += depth_first_search(d, &a, i, j);
         }

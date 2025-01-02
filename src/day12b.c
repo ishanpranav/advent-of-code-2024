@@ -40,7 +40,7 @@ static Shape depth_first_search(
     size_t n = a->n;
     char w = a->items[i][j];
     bool up = i - 1 < m && a->items[i - 1][j] == w;
-    bool upLeft = i - 1 < m && j - 1 < n && a->items[i - 1][ j - 1] == w;
+    bool upLeft = i - 1 < m && j - 1 < n && a->items[i - 1][j - 1] == w;
     bool upRight = i - 1 < m && j + 1 < n && a->items[i - 1][j + 1] == w;
     bool left = j - 1 < n && a->items[i][j - 1] == w;
     bool right = j + 1 < n && a->items[i][j + 1] == w;
@@ -55,16 +55,16 @@ static Shape depth_first_search(
         result.edges++;
     }
 
-    if ((!up && !left) || (up && left &&!upLeft))
+    if ((!up && !left) || (up && left && !upLeft))
     {
-        result.edges++;    
+        result.edges++;
     }
 
     if ((!down && !right) || (down && right && !downRight))
     {
         result.edges++;
     }
-    
+
     if ((!down && !left) || (down && left && !downLeft))
     {
         result.edges++;
@@ -138,7 +138,12 @@ int main()
     }
 
     size_t result = 0;
-    bool d[MAX_M][MAX_N] = { 0 };
+    bool d[MAX_M][MAX_N];
+
+    for (size_t i = 0; i < a.m; i++)
+    {
+        memset(d[i], 0, sizeof * d[i] * a.n);
+    }
 
     for (size_t i = 0; i < a.m; i++)
     {

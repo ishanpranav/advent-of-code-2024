@@ -133,7 +133,12 @@ int main()
     }
 
     size_t count = 0;
-    bool s[MAX_M][MAX_N] = { 0 };
+    bool s[MAX_M][MAX_N];
+
+    for (size_t i = 0; i < m; i++)
+    {
+        memset(s[i], 0, sizeof * s[i] * n);
+    }
 
     for (char c = '0'; c <= '9'; c++)
     {

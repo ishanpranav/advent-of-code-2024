@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #ifndef DAY18
 #define DAY18
-#define DIMENSION 7
+#define N 7
 #define MAX_POINTS 12
 #endif
 #define queue_is_empty(instance) ((instance)->first == -1)
@@ -26,7 +26,7 @@ struct Queue
 {
     int first;
     int last;
-    Point items[DIMENSION * DIMENSION];
+    Point items[N * N];
 };
 
 typedef struct Queue Queue;
@@ -44,7 +44,7 @@ static void queue_enqueue(Queue* instance, unsigned int x, unsigned int y)
         instance->first = 0;
         instance->last = 0;
     }
-    else if (instance->last == DIMENSION * DIMENSION - 1)
+    else if (instance->last == N * N - 1)
     {
         instance->last = 0;
     }
@@ -69,7 +69,7 @@ static Point queue_dequeue(Queue* instance)
         return result;
     }
 
-    if (instance->first == DIMENSION * DIMENSION - 1)
+    if (instance->first == N * N - 1)
     {
         instance->first = 0;
 
@@ -81,7 +81,7 @@ static Point queue_dequeue(Queue* instance)
     return result;
 }
 
-static unsigned int breadth_first_search(unsigned int d[DIMENSION][DIMENSION])
+static unsigned int breadth_first_search(unsigned int d[N][N])
 {
     d[0][0] = 0;
 
@@ -94,33 +94,33 @@ static unsigned int breadth_first_search(unsigned int d[DIMENSION][DIMENSION])
     {
         Point u = queue_dequeue(&q);
 
-        if (u.x == DIMENSION - 1 && u.y == DIMENSION - 1)
+        if (u.x == N - 1 && u.y == N - 1)
         {
             return d[u.x][u.y];
         }
 
-        if (u.x - 1 < DIMENSION && d[u.x - 1][u.y] == UINT_MAX)
+        if (u.x - 1 < N && d[u.x - 1][u.y] == UINT_MAX)
         {
             d[u.x - 1][u.y] = d[u.x][u.y] + 1;
 
             queue_enqueue(&q, u.x - 1, u.y);
         }
 
-        if (u.x + 1 < DIMENSION && d[u.x + 1][u.y] == UINT_MAX)
+        if (u.x + 1 < N && d[u.x + 1][u.y] == UINT_MAX)
         {
             d[u.x + 1][u.y] = d[u.x][u.y] + 1;
 
             queue_enqueue(&q, u.x + 1, u.y);
         }
 
-        if (u.y - 1 < DIMENSION && d[u.x][u.y - 1] == UINT_MAX)
+        if (u.y - 1 < N && d[u.x][u.y - 1] == UINT_MAX)
         {
             d[u.x][u.y - 1] = d[u.x][u.y] + 1;
 
             queue_enqueue(&q, u.x, u.y - 1);
         }
 
-        if (u.y + 1 < DIMENSION && d[u.x][u.y + 1] == UINT_MAX)
+        if (u.y + 1 < N && d[u.x][u.y + 1] == UINT_MAX)
         {
             d[u.x][u.y + 1] = d[u.x][u.y] + 1;
 
@@ -134,11 +134,11 @@ static unsigned int breadth_first_search(unsigned int d[DIMENSION][DIMENSION])
 int main()
 {
     Point u;
-    unsigned int d[DIMENSION][DIMENSION];
+    unsigned int d[N][N];
 
-    for (u.x = 0; u.x < DIMENSION; u.x++)
+    for (u.x = 0; u.x < N; u.x++)
     {
-        for (u.y = 0; u.y < DIMENSION; u.y++)
+        for (u.y = 0; u.y < N; u.y++)
         {
             d[u.x][u.y] = UINT_MAX;
         }

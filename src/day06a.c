@@ -37,7 +37,13 @@ int main()
         }
     }
 
-    bool b[MAX_M][MAX_N] = { 0 };
+    bool b[MAX_M][MAX_N];
+
+    for (size_t i = 0; i < m; i++)
+    {
+        memset(b[i], 0, sizeof * b[i] * n);
+    }
+
     size_t i;
     size_t j = 0;
 

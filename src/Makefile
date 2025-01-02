@@ -49,16 +49,16 @@ day17s: day17a.c
 	$(CC) $(CFLAGS) -DDAY17 -DBUFFER_SIZE=16 -DPROGRAM_SIZE=16 -DSAMPLE=true  $< -o $@
 
 day18a: day18a.c
-	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=71 -DMAX_POINTS=1024 $< -o $@
+	$(CC) $(CFLAGS) -DDAY18 -DN=71 -DMAX_POINTS=1024 $< -o $@
 	
 day18s: day18a.c
-	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=7 -DMAX_POINTS=12 $< -o $@
+	$(CC) $(CFLAGS) -DDAY18 -DN=7 -DMAX_POINTS=12 $< -o $@
 
 day18b: day18b.c
-	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=71 $< -o $@
+	$(CC) $(CFLAGS) -DDAY18 -DN=71 $< -o $@
 	
 day18t: day18b.c
-	$(CC) $(CFLAGS) -DDAY18 -DDIMENSION=7 $< -o $@
+	$(CC) $(CFLAGS) -DDAY18 -DN=7 $< -o $@
 
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@

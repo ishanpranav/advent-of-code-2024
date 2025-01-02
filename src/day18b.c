@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #ifndef DAY18
 #define DAY18
-#define DIMENSION 7
+#define N 7
 #endif
 
 struct Point
@@ -30,13 +30,13 @@ typedef struct DisjointSubset DisjointSubset;
 
 struct DisjointSet
 {
-    DisjointSubset subsets[DIMENSION][DIMENSION];
+    DisjointSubset subsets[N][N];
 };
 
 struct Stack
 {
     unsigned int count;
-    Point items[DIMENSION * DIMENSION];
+    Point items[N * N];
 };
 
 typedef struct DisjointSet DisjointSet;
@@ -46,9 +46,9 @@ static void disjoint_set(DisjointSet* instance)
 {
     Point u;
 
-    for (u.x = 0; u.x < DIMENSION; u.x++)
+    for (u.x = 0; u.x < N; u.x++)
     {
-        for (u.y = 0; u.y < DIMENSION; u.y++)
+        for (u.y = 0; u.y < N; u.y++)
         {
             instance->subsets[u.x][u.y].count = 1;
             instance->subsets[u.x][u.y].parent = u;
@@ -122,14 +122,14 @@ static Point stack_pop(Stack* instance)
 static void main_step(
     DisjointSet* p,
     Point u,
-    const bool set[DIMENSION][DIMENSION])
+    const bool set[N][N])
 {
     Point v;
 
     v = u;
     v.x--;
 
-    if (v.x < DIMENSION && !set[v.x][v.y])
+    if (v.x < N && !set[v.x][v.y])
     {
         disjoint_set_union(p, u, v);
     }
@@ -137,7 +137,7 @@ static void main_step(
     v = u;
     v.x++;
 
-    if (v.x < DIMENSION && !set[v.x][v.y])
+    if (v.x < N && !set[v.x][v.y])
     {
         disjoint_set_union(p, u, v);
     }
@@ -145,7 +145,7 @@ static void main_step(
     v = u;
     v.y--;
 
-    if (v.y < DIMENSION && !set[v.x][v.y])
+    if (v.y < N && !set[v.x][v.y])
     {
         disjoint_set_union(p, u, v);
     }
@@ -153,7 +153,7 @@ static void main_step(
     v = u;
     v.y++;
 
-    if (v.y < DIMENSION && !set[v.x][v.y])
+    if (v.y < N && !set[v.x][v.y])
     {
         disjoint_set_union(p, u, v);
     }
@@ -166,7 +166,7 @@ int main()
     stack(&pointStack);
 
     Point u;
-    bool pointSet[DIMENSION][DIMENSION] = { 0 };
+    bool pointSet[N][N] = { 0 };
 
     while (scanf("%u,%u ", &u.x, &u.y) == 2)
     {
@@ -179,9 +179,9 @@ int main()
 
     disjoint_set(&p);
 
-    for (u.x = 0; u.x < DIMENSION; u.x++)
+    for (u.x = 0; u.x < N; u.x++)
     {
-        for (u.y = 0; u.y < DIMENSION; u.y++)
+        for (u.y = 0; u.y < N; u.y++)
         {
             if (pointSet[u.x][u.y])
             {
@@ -196,7 +196,7 @@ int main()
     u.y = UINT_MAX;
 
     Point s = { .x = 0, .y = 0 };
-    Point t = { .x = DIMENSION - 1, .y = DIMENSION - 1 };
+    Point t = { .x = N - 1, .y = N - 1 };
 
     while (disjoint_set_disjoint(&p, s, t))
     {

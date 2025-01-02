@@ -46,8 +46,13 @@ size_t main_step(Coordinate results[], const Matrix* a, Coordinate s)
     int di = -1;
     int dj = 0;
     size_t resultCount = 0;
-    Hits b[MAX_M][MAX_N] = { 0 };
     Hits color = HITS_UP;
+    Hits b[MAX_M][MAX_N];
+
+    for (size_t i = 0; i < a->m; i++)
+    {
+        memset(b[i], 0, sizeof * b[i] * a->n);
+    }
 
     for (;;)
     {

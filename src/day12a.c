@@ -31,9 +31,9 @@ typedef struct Matrix Matrix;
 typedef struct Shape Shape;
 
 static Shape depth_first_search(
-    bool d[MAX_M][MAX_N], 
-    const Matrix* a, 
-    size_t i, 
+    bool d[MAX_M][MAX_N],
+    const Matrix* a,
+    size_t i,
     size_t j)
 {
     char w = a->items[i][j];
@@ -43,7 +43,7 @@ static Shape depth_first_search(
     {
         result.perimeter++;
     }
-    
+
     if (i + 1 >= a->m || a->items[i + 1][j] != w)
     {
         result.perimeter++;
@@ -53,7 +53,7 @@ static Shape depth_first_search(
     {
         result.perimeter++;
     }
-    
+
     if (j + 1 >= a->n || a->items[i][j + 1] != w)
     {
         result.perimeter++;
@@ -62,7 +62,7 @@ static Shape depth_first_search(
     if (i - 1 < a->m && !d[i - 1][j] && a->items[i - 1][j] == w)
     {
         d[i - 1][j] = true;
-        
+
         Shape shape = depth_first_search(d, a, i - 1, j);
 
         result.area += shape.area;
@@ -72,17 +72,17 @@ static Shape depth_first_search(
     if (i + 1 < a->m && !d[i + 1][j] && a->items[i + 1][j] == w)
     {
         d[i + 1][j] = true;
-        
+
         Shape shape = depth_first_search(d, a, i + 1, j);
 
         result.area += shape.area;
         result.perimeter += shape.perimeter;
     }
-    
+
     if (j - 1 < a->n && !d[i][j - 1] && a->items[i][j - 1] == w)
     {
         d[i][j - 1] = true;
-        
+
         Shape shape = depth_first_search(d, a, i, j - 1);
 
         result.area += shape.area;
@@ -92,7 +92,7 @@ static Shape depth_first_search(
     if (j + 1 < a->n && !d[i][j + 1] && a->items[i][j + 1] == w)
     {
         d[i][j + 1] = true;
-        
+
         Shape shape = depth_first_search(d, a, i, j + 1);
 
         result.area += shape.area;
@@ -125,9 +125,14 @@ int main()
             a.m++;
         }
     }
-    
+
     size_t result = 0;
-    bool d[MAX_M][MAX_N] = { 0 };
+    bool d[MAX_M][MAX_N];
+
+    for (size_t i = 0; i < a.m; i++)
+    {
+        memset(d[i], 0, sizeof * d[i] * a.n);
+    }
 
     for (size_t i = 0; i < a.m; i++)
     {
