@@ -26,13 +26,6 @@ struct DisjointSet
     Point parents[DIMENSION][DIMENSION];
 };
 
-struct Queue
-{
-    int first;
-    int last;
-    Point items[DIMENSION * DIMENSION];
-};
-
 struct Stack
 {
     unsigned int count;
@@ -40,7 +33,6 @@ struct Stack
 };
 
 typedef struct DisjointSet DisjointSet;
-typedef struct Queue Queue;
 typedef struct Stack Stack;
 
 static void disjoint_set(DisjointSet* instance)
@@ -105,106 +97,6 @@ static Point stack_pop(Stack* instance)
     instance->count--;
 
     return instance->items[instance->count];
-}
-
-static void queue(Queue* instance)
-{
-    instance->first = -1;
-    instance->last = -1;
-}
-
-static void queue_enqueue(Queue* instance, unsigned int x, unsigned int y)
-{
-    if (instance->last == -1)
-    {
-        instance->first = 0;
-        instance->last = 0;
-    }
-    else if (instance->last == DIMENSION * DIMENSION - 1)
-    {
-        instance->last = 0;
-    }
-    else
-    {
-        instance->last++;
-    }
-
-    instance->items[instance->last].x = x;
-    instance->items[instance->last].y = y;
-}
-
-static Point queue_dequeue(Queue* instance)
-{
-    Point result = instance->items[instance->first];
-
-    if (instance->first == instance->last)
-    {
-        instance->first = -1;
-        instance->last = -1;
-
-        return result;
-    }
-
-    if (instance->first == DIMENSION * DIMENSION - 1)
-    {
-        instance->first = 0;
-
-        return result;
-    }
-
-    instance->first++;
-
-    return result;
-}
-
-static unsigned int breadth_first_search(unsigned int d[DIMENSION][DIMENSION])
-{
-    d[0][0] = 0;
-
-    Queue q;
-
-    queue(&q);
-    queue_enqueue(&q, 0, 0);
-
-    while (!queue_is_empty(&q))
-    {
-        Point u = queue_dequeue(&q);
-
-        if (u.x == DIMENSION - 1 && u.y == DIMENSION - 1)
-        {
-            return d[u.x][u.y];
-        }
-
-        if (u.x - 1 < DIMENSION && d[u.x - 1][u.y] == UINT_MAX)
-        {
-            d[u.x - 1][u.y] = d[u.x][u.y] + 1;
-
-            queue_enqueue(&q, u.x - 1, u.y);
-        }
-
-        if (u.x + 1 < DIMENSION && d[u.x + 1][u.y] == UINT_MAX)
-        {
-            d[u.x + 1][u.y] = d[u.x][u.y] + 1;
-
-            queue_enqueue(&q, u.x + 1, u.y);
-        }
-
-        if (u.y - 1 < DIMENSION && d[u.x][u.y - 1] == UINT_MAX)
-        {
-            d[u.x][u.y - 1] = d[u.x][u.y] + 1;
-
-            queue_enqueue(&q, u.x, u.y - 1);
-        }
-
-        if (u.y + 1 < DIMENSION && d[u.x][u.y + 1] == UINT_MAX)
-        {
-            d[u.x][u.y + 1] = d[u.x][u.y] + 1;
-
-            queue_enqueue(&q, u.x, u.y + 1);
-        }
-    }
-
-    return UINT_MAX;
 }
 
 static void main_step(
