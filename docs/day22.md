@@ -4,7 +4,7 @@
 
 <!-- Monkey Market -->
 
-# Monkey Market
+# Day 22: Monkey Market
 
 Let $S$ be a set and $m\in\mathbb{Z}$.
 

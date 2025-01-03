@@ -4,7 +4,7 @@
 
 <!-- Linen Layout -->
 
-# Linen Layout
+# Day 19: Linen Layout
 
 Let $A,B$ be sets of sequences.
 

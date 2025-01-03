@@ -13,7 +13,8 @@ all: day01a day01b day02a day02b day03a day03b day04a day04b day05a day05b \
 	day17a day17s \
 	day18a day18b day18s day18t \
 	day19a day19b \
-	day22a day22b day23a day23b \
+	day22a \
+	day23a day23b \
 	day24a day24b \
 	day25z
 

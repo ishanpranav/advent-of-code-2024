@@ -33,6 +33,8 @@ Day 14(b).
 insights at [expectancyViolation/aoc_2024](https://github.com/expectancyViolation/aoc_2024).
 I have no improvements to offer.
 
+**Day 22(b):** The generalized solution for Day 22(b) is inefficient.
+
 ## Usage
 
 These programs are cross-platform, having been tested on Windows and Linux
