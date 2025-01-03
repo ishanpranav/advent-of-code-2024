@@ -12,8 +12,10 @@ all: day01a day01b day02a day02b day03a day03b day04a day04b day05a day05b \
 	day15a day15b day16a day16b \
 	day17a day17s \
 	day18a day18b day18s day18t \
-	day19a day19b day20a day20b day21a day21b day22a day22b day23a day23b \
-	day24a day24b day25z
+	day19a day19b \
+	day22a day22b day23a day23b \
+	day24a day24b \
+	day25z
 
 day05a: day05x.c
 	$(CC) $(CFLAGS) -DDAY05 -DBUFFER_SIZE=128 -DEQUAL=false -DMAX_VERTICES=128  $< -o $@

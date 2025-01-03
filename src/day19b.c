@@ -1,4 +1,4 @@
-// day19a.c
+// day19b.c
 // Copyright (c) 2024-2025 Ishan Pranav
 // Licensed under the MIT license.
 
