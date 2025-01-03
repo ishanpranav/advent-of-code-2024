@@ -27,6 +27,8 @@ Day 14(b).
 
 **Day 17(b):** By design, there is no general solution for Day 17(b).
 
+**Day 20:** The generalized solution for Day 20(a) and Day 20(b) is inefficient.
+
 ## Usage
 
 These programs are cross-platform, having been tested on Windows and Linux

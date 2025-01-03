@@ -32,7 +32,6 @@ for each solution.
 - [Day 17](https://github.com/ishanpranav/advent-of-code-2024/blob/master/src/day17a.c)
 - [Day 18](/advent-of-code-2024/day18)
 - [Day 19](/advent-of-code-2024/day19)
-- [Day 20](/advent-of-code-2024/day20)
 - [Day 21](/advent-of-code-2024/day21)
 - [Day 22](/advent-of-code-2024/day22)
 - [Day 23](/advent-of-code-2024/day23)
