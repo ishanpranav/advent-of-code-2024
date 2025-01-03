@@ -4,8 +4,6 @@
 
 // Linen Layout
 
-#include <stdlib.h>
-
 #include <ctype.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -14,28 +12,69 @@
 #ifndef DAY19
 #define BUFFER_SIZE 4096
 #define MAX_N 64
+#define POOL_SIZE 1024
 #endif
+
+enum Color
+{
+    COLOR_RED,
+    COLOR_GREEN,
+    COLOR_BLUE,
+    COLOR_WHITE,
+    COLOR_BLACK,
+    MAX_COLOR
+};
 
 typedef struct Trie Trie;
 
 struct Trie
 {
     bool leaf;
-    Trie* children[26];
+    Trie* children[MAX_COLOR];
 };
 
-static void trie_add(Trie* instance, const char* item)
+struct TriePool
+{
+    unsigned int count;
+    Trie items[POOL_SIZE];
+};
+
+typedef enum Color Color;
+typedef struct TriePool TriePool;
+
+static Color color(char value)
+{
+    switch (value)
+    {
+    case 'r': return COLOR_RED;
+    case 'g': return COLOR_GREEN;
+    case 'u': return COLOR_BLUE;
+    case 'b': return COLOR_BLACK;
+    case 'w': return COLOR_WHITE;
+    default: return MAX_COLOR;
+    }
+}
+
+static void trie_pool(TriePool* instance)
+{
+    instance->count = 0;
+}
+
+static void trie_add(Trie* instance, TriePool* pool, const char* item)
 {
     Trie* current = instance;
 
     for (; *item; item++)
     {
-        unsigned int index = *item - 'a';
+        unsigned int index = color(*item);
 
         if (!current->children[index])
         {
-            Trie* child = calloc(1, sizeof * child);
+            Trie* child = pool->items + pool->count;
 
+            memset(child, 0, sizeof * child);
+
+            pool->count++;
             current->children[index] = child;
         }
 
@@ -49,6 +88,9 @@ int main()
 {
     char buffer[BUFFER_SIZE];
     unsigned int x = 0;
+    TriePool pool;
+
+    trie_pool(&pool);
 
     if (fgets(buffer, BUFFER_SIZE, stdin))
     {
@@ -56,7 +98,7 @@ int main()
 
         for (char* p = strtok(buffer, ", \r\n"); p; p = strtok(NULL, ", \r\n"))
         {
-            trie_add(&t, p);
+            trie_add(&t, &pool, p);
         }
 
         char b[MAX_N];
@@ -92,7 +134,7 @@ int main()
 
                 for (size_t k = 0; k < n - i; k++)
                 {
-                    current = current->children[(unsigned int)(b[i + k] - 'a')];
+                    current = current->children[color(b[i + k])];
 
                     if (!current)
                     {
