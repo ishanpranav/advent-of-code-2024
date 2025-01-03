@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #ifndef DAY19
+#define DAY19
 #define BUFFER_SIZE 4096
 #define MAX_N 64
 #define POOL_SIZE 1024

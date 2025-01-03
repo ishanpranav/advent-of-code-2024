@@ -13,9 +13,12 @@ Let $G=(V,E)$ be an undirected graph. Let $U\subseteq V$.
 **Algorithm:**
 
 * let $n\leftarrow 0$;
-* for $\lbrace u,v\rbrace\in E$:
-  * for $w\in U\cap\lbrace w\mid\lbrace u,w\rbrace\in E\rbrace\cap\lbrace w\mid\lbrace v,w\rbrace\in E\rbrace$:
-    * assign $n\leftarrow n+1$;
+* let $D\leftarrow\emptyset$;
+* for $u\in U$:
+  * assign $D\leftarrow D\cup\lbrace u\rbrace$;
+  * for $(\lbrace u,v\rbrace,\lbrace u,w\rbrace)\in E\times E$:
+    * if $v\neq w$ and $\lbrace v,w\rbrace\cap D=\emptyset$ and $(v,w)\in E$, then:
+      * assign $n\leftarrow n+1$;
 * return $n$.
 
 **Time complexity:** $O(\lvert E\rvert^2)$.
