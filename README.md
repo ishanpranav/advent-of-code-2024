@@ -29,6 +29,10 @@ Day 14(b).
 
 **Day 20:** The generalized solution for Day 20(a) and Day 20(b) is inefficient.
 
+**Day 21:** My favorite solution for Day 21(a) and Day 21(b) comes from the
+insights at [expectancyViolation/aoc_2024](https://github.com/expectancyViolation/aoc_2024).
+I have no improvements to offer.
+
 ## Usage
 
 These programs are cross-platform, having been tested on Windows and Linux
