@@ -155,8 +155,8 @@ static void bron_kerbosch(Clique* result, BronKerbosch value, const Graph* g)
 
 static int compare(const void* left, const void* right)
 {
-    const char* p = left;
-    const char* q = right;
+    const unsigned char* p = left;
+    const unsigned char* q = right;
 
     return memcmp(p, q, 2);
 }
