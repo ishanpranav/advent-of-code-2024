@@ -6,9 +6,9 @@
 
 # Day 23: LAN Party
 
-Let $G=(V,E)$ be an undirected graph. Let $U\subseteq V$.
-
 ## Part A
+
+Let $G=(V,E)$ be an undirected graph. Let $U\subseteq V$.
 
 **Algorithm:**
 
@@ -24,3 +24,14 @@ Let $G=(V,E)$ be an undirected graph. Let $U\subseteq V$.
 **Time complexity:** $O(\lvert E\rvert^2)$.
 
 **Space complexity:** $O(1)$.
+
+## Part B
+
+Let $G=(V,E)$ be an undirected graph.
+
+**Algorithm:**
+
+* let $\mathcal{C}\leftarrow$ Bron–Kerbosch set of maximal cliques of $G$;
+* return $\argmax_{C\in\mathcal{C}}(\lvert C\rvert)$.
+
+**Time complexity:** $O\left(3^{\frac{\lvert V\rvert}{3}}\right)$.
