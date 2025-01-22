@@ -22,10 +22,9 @@ is inspired by [this Reddit conversation](https://www.reddit.com/r/adventofcode/
 
 ## Omissions
 
-**Day 14(b):** By design, there is no generalized heuristic-free algorithm for
-Day 14(b).
-
-**Day 17(b):** By design, there is no general solution for Day 17(b).
+**Day 14(b), Day 17(b), Day 24(b):** By design, there is no generalized
+heuristic-free algorithm for Day 14(b), Day 17(b), and Day 23(b). These
+reverse-engineering problems that require assumptions about the input.
 
 **Day 20:** The generalized solution for Day 20(a) and Day 20(b) is inefficient.
 
